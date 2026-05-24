@@ -128,6 +128,58 @@ body {
 .library-selector select:focus {
   border-color: #ff9ff3;
 }
+
+/* login screen */
+#screen-login .subtitle { font-size: 18px; color: #7c5cbf; margin-bottom: 15px; }
+.user-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border: 2px solid #dfe6e9;
+  border-radius: 20px;
+  background: white;
+  font-size: 16px;
+  font-family: inherit;
+  color: #5a3e85;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.user-card:hover { border-color: #ff9ff3; transform: scale(1.03); background: #fff5fa; }
+.user-card .user-del {
+  margin-left: 4px;
+  color: #ccc;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.user-card .user-del:hover { color: #ff6b6b; }
+
+/* difficulty slider */
+.difficulty-slider-wrap {
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto 16px auto;
+  text-align: center;
+}
+.difficulty-slider-wrap label {
+  font-size: 15px;
+  color: #5a3e85;
+  font-weight: bold;
+}
+.difficulty-slider-wrap input[type=range] {
+  width: 100%;
+  margin: 6px 0 2px 0;
+  accent-color: #ff9ff3;
+}
+.diff-marks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #b2bec3;
+  padding: 0 4px;
+}
+
 #screen-start .mascot {
   font-size: 100px;
   animation: bounce 1s ease-in-out infinite;
@@ -688,8 +740,23 @@ body {
     <div class="cloud"></div>
   </div>
 
+  <!-- Login Screen -->
+  <div id="screen-login" class="screen active">
+    <div class="title">🌟 趣味打字大冒险 🌟</div>
+    <div class="subtitle">选择你的小玩家吧！</div>
+    <div class="mascot">🦊</div>
+    <div style="width:100%;max-width:360px;margin:0 auto;">
+      <div id="user-list" style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:20px;"></div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input id="new-user-input" type="text" placeholder="输入新名字..." maxlength="12" style="flex:1;padding:10px 14px;border:2px solid #dfe6e9;border-radius:20px;font-size:16px;font-family:inherit;outline:none;">
+        <button class="btn" onclick="game.createUser()" style="white-space:nowrap;padding:10px 18px;font-size:15px;">✨ 创建</button>
+      </div>
+      <div id="login-error" style="color:#ff6b6b;font-size:13px;margin-top:8px;min-height:18px;"></div>
+    </div>
+  </div>
+
   <!-- Start Screen -->
-  <div id="screen-start" class="screen active">
+  <div id="screen-start" class="screen">
     <div class="title">🌟 趣味打字大冒险 🌟</div>
     <div class="subtitle">和小动物一起学打字吧！</div>
     <div class="mascot">🦊</div>
@@ -707,8 +774,19 @@ body {
         <option value="toefl">🌍 托福</option>
       </select>
     </div>
+    <div class="difficulty-slider-wrap">
+      <label>⏱️ 单词时间限制：<span id="diff-label">正常</span></label>
+      <input type="range" id="diff-slider" min="0" max="4" value="2" step="1" oninput="game.updateDifficulty(this.value)">
+      <div class="diff-marks">
+        <span>很长</span><span>较长</span><span>正常</span><span>较短</span><span>很短</span>
+      </div>
+    </div>
     <button class="btn btn-start" onclick="game.start()">🎮 开始冒险</button>
     <div style="margin-top:15px;color:#b2bec3;font-size:14px;">点击按钮或按任意键开始</div>
+    <div style="margin-top:10px;">
+      <span id="start-user-label" style="color:#7c5cbf;font-size:14px;font-weight:bold;"></span>
+      <button class="btn" onclick="game.switchUser()" style="padding:6px 16px;font-size:13px;background:transparent;border:1px solid #dfe6e9;color:#999;">🔄 切换用户</button>
+    </div>
   </div>
 
   <!-- Game Screen -->
@@ -725,6 +803,7 @@ body {
       <div class="hearts" id="game-hearts"></div>
       <div class="combo-display" id="combo-display">🔥 x1</div>
       <button class="pause-btn" id="pause-btn" onclick="game.togglePause()" title="暂停 (Esc)">⏸</button>
+      <span id="current-user-label" style="font-size:13px;color:#7c5cbf;font-weight:bold;margin-left:4px;"></span>
     </div>
     <div class="progress-bar-wrap">
       <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
@@ -789,6 +868,8 @@ const game = {
   combo: 0,
   maxCombo: 0,
   isPaused: false,
+  currentUser: null,
+  timeMultiplier: 1,
   currentWord: '',
   wordTimer: 0,
   wordTimeLimit: 0,
@@ -857,6 +938,85 @@ const game = {
   selectLibrary(lib) {
     this.selectedLibrary = lib;
     this.buildWordLists();
+  },
+
+  // ─── User Management ──────────────────────────
+  loadUsers() {
+    try {
+      const data = localStorage.getItem('typingGameUsers');
+      return data ? JSON.parse(data) : [];
+    } catch { return []; }
+  },
+
+  saveUsers(users) {
+    localStorage.setItem('typingGameUsers', JSON.stringify(users));
+  },
+
+  renderUserList() {
+    const users = this.loadUsers();
+    const container = document.getElementById('user-list');
+    if (!container) return;
+    if (users.length === 0) {
+      container.innerHTML = '<div style="color:#b2bec3;font-size:14px;width:100%;">还没有小玩家，在下方创建吧~</div>';
+      return;
+    }
+    container.innerHTML = users.map(u =>
+      `<div class="user-card" onclick="game.loginUser('${u.name.replace(/'/g, "\\'")}')">
+        <span>👤</span> ${u.name}
+        <span class="user-del" onclick="event.stopPropagation();game.deleteUser('${u.name.replace(/'/g, "\\'")}')">✕</span>
+      </div>`
+    ).join('');
+  },
+
+  createUser() {
+    const input = document.getElementById('new-user-input');
+    const errEl = document.getElementById('login-error');
+    const name = input.value.trim();
+    if (!name) { errEl.textContent = '名字不能为空哦~'; return; }
+    if (name.length > 12) { errEl.textContent = '名字最多12个字~'; return; }
+    const users = this.loadUsers();
+    if (users.find(u => u.name.toLowerCase() === name.toLowerCase())) {
+      errEl.textContent = '这个名字已经有人用啦~'; return;
+    }
+    users.push({ name, createdAt: Date.now() });
+    this.saveUsers(users);
+    input.value = '';
+    errEl.textContent = '';
+    this.renderUserList();
+    this.loginUser(name);
+  },
+
+  loginUser(name) {
+    this.currentUser = name;
+    document.getElementById('new-user-input').value = '';
+    document.getElementById('login-error').textContent = '';
+    const userLabel = document.getElementById('current-user-label');
+    if (userLabel) userLabel.textContent = '👤 ' + name;
+    this.showScreen('start');
+  },
+
+  deleteUser(name) {
+    let users = this.loadUsers();
+    users = users.filter(u => u.name !== name);
+    this.saveUsers(users);
+    if (this.currentUser === name) this.currentUser = null;
+    this.renderUserList();
+  },
+
+  switchUser() {
+    this.currentUser = null;
+    this.renderUserList();
+    this.showScreen('login');
+  },
+
+  // ─── Difficulty Slider ────────────────────────
+  updateDifficulty(val) {
+    // val: 0..4  → timeMultiplier: 2.0, 1.5, 1.0, 0.7, 0.5
+    const multipliers = [2.0, 1.5, 1.0, 0.7, 0.5];
+    const labels = ['很长', '较长', '正常', '较短', '很短'];
+    this.timeMultiplier = multipliers[val];
+    const labelEl = document.getElementById('diff-label');
+    if (labelEl) labelEl.textContent = labels[val];
   },
 
   // ─── Dictionary: phonetic + Chinese ────────────
@@ -1048,6 +1208,24 @@ const game = {
         this.dom.hintText.textContent = '👆 点击上方彩色区域开始打字吧！单词输完自动提交~';
       }
     });
+
+    // enter key on login input
+    const newUserInput = document.getElementById('new-user-input');
+    if (newUserInput) {
+      newUserInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') this.createUser();
+      });
+    }
+
+    // show login or start screen
+    this.renderUserList();
+    if (!this.currentUser) {
+      this.showScreen('login');
+    } else {
+      const userLabel = document.getElementById('current-user-label');
+      if (userLabel) userLabel.textContent = '👤 ' + this.currentUser;
+      this.showScreen('start');
+    }
   },
 
   // ─── On-screen Keyboard ────────────────────────
@@ -1121,7 +1299,9 @@ const game = {
       if (el && el.classList) el.classList.remove('active');
     });
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const loginEl = document.getElementById('screen-login');
     const map = {
+      'login': loginEl,
       'start': this.dom.start,
       'game': this.dom.game,
       'level-complete': this.dom.levelComplete,
@@ -1130,6 +1310,13 @@ const game = {
     };
     if (map[name]) map[name].classList.add('active');
     this.screen = name;
+    // update user labels
+    if (this.currentUser) {
+      const cl = document.getElementById('current-user-label');
+      if (cl) cl.textContent = '👤 ' + this.currentUser;
+      const sl = document.getElementById('start-user-label');
+      if (sl) sl.textContent = '当前玩家：' + this.currentUser;
+    }
   },
 
   start() {
@@ -1253,7 +1440,7 @@ const game = {
 
     // start timer
     const cfg = this.levelConfig[this.level];
-    this.wordTimeLimit = cfg.timeLimit;
+    this.wordTimeLimit = Math.max(2, Math.round(cfg.timeLimit * this.timeMultiplier));
     this.wordTimer = this.wordTimeLimit;
     const timerFill = bubble.querySelector('.timer-ring-fill');
 
