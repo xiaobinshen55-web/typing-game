@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌟 趣味打字大冒险 - 儿童打字游戏</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Comic Sans MS', 'Chalkboard SE', 'STHupo', cursive, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  user-select: none;
+}
+
+#app {
+  width: 800px;
+  max-width: 95vw;
+  height: 650px;
+  max-height: 95vh;
+  background: linear-gradient(180deg, #fff9e6 0%, #ffe8f0 40%, #e8f4fd 100%);
+  border-radius: 40px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.5);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* floating decoration */
+.clouds {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.cloud {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: floatCloud 20s linear infinite;
+}
+.cloud::before, .cloud::after {
+  content: '';
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+}
+.cloud:nth-child(1) { width: 80px; height: 40px; top: 20px; left: 10%; animation-delay: 0s; }
+.cloud:nth-child(1)::before { width: 40px; height: 40px; top: -20px; left: 15px; }
+.cloud:nth-child(1)::after { width: 50px; height: 50px; top: -25px; left: 35px; }
+.cloud:nth-child(2) { width: 100px; height: 45px; top: 50px; right: 15%; animation-delay: -7s; }
+.cloud:nth-child(2)::before { width: 50px; height: 50px; top: -25px; left: 20px; }
+.cloud:nth-child(2)::after { width: 55px; height: 55px; top: -28px; left: 50px; }
+.cloud:nth-child(3) { width: 70px; height: 35px; top: 80px; left: 55%; animation-delay: -14s; }
+.cloud:nth-child(3)::before { width: 35px; height: 35px; top: -18px; left: 12px; }
+.cloud:nth-child(3)::after { width: 40px; height: 40px; top: -22px; left: 30px; }
+
+@keyframes floatCloud {
+  0% { transform: translateX(-120px); }
+  100% { transform: translateX(calc(100vw + 120px)); }
+}
+
+/* screens */
+.screen {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  padding: 30px;
+}
+.screen.active { display: flex; }
+
+/* start screen */
+#screen-start .title {
+  font-size: 52px;
+  font-weight: bold;
+  background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 3s ease infinite;
+  text-shadow: none;
+  margin-bottom: 10px;
+}
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+#screen-start .subtitle {
+  font-size: 20px;
+  color: #7c5cbf;
+  margin-bottom: 20px;
+}
+
+.library-selector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: #5a3e85;
+  font-weight: bold;
+}
+.library-selector select {
+  padding: 8px 16px;
+  font-size: 17px;
+  font-family: inherit;
+  border: 2px solid #dfe6e9;
+  border-radius: 20px;
+  background: white;
+  color: #5a3e85;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.library-selector select:focus {
+  border-color: #ff9ff3;
+}
+#screen-start .mascot {
+  font-size: 100px;
+  animation: bounce 1s ease-in-out infinite;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+.btn {
+  padding: 16px 50px;
+  font-size: 22px;
+  font-family: inherit;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  color: white;
+  font-weight: bold;
+  letter-spacing: 2px;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+.btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+.btn:active { transform: translateY(3px); }
+
+.btn-start {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  font-size: 28px;
+  padding: 18px 60px;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,107,107,0.6); }
+  50% { box-shadow: 0 0 0 25px rgba(255,107,107,0); }
+}
+
+.btn-next {
+  background: linear-gradient(135deg, #48dbfb, #0abde3);
+}
+.btn-bonus {
+  background: linear-gradient(135deg, #feca57, #ff9f43);
+}
+.btn-retry {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+}
+
+/* game screen */
+#screen-game { justify-content: flex-start; padding: 15px 20px; }
+
+.game-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background: rgba(255,255,255,0.7);
+  border-radius: 30px;
+  margin-bottom: 10px;
+  z-index: 5;
+}
+
+.header-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  color: #5a3e85;
+  font-weight: bold;
+}
+.header-item .icon { font-size: 24px; }
+
+.hearts { display: flex; gap: 3px; }
+.heart {
+  font-size: 22px;
+  transition: all 0.3s;
+}
+.heart.lost { opacity: 0.2; transform: scale(0.7); filter: grayscale(1); }
+
+.combo-display {
+  background: linear-gradient(135deg, #feca57, #ff9f43);
+  color: white;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 16px;
+  animation: comboBounce 0.3s ease;
+  display: none;
+}
+.combo-display.show { display: block; }
+@keyframes comboBounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+}
+
+.progress-bar-wrap {
+  width: 100%;
+  height: 12px;
+  background: rgba(255,255,255,0.6);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  z-index: 5;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #48dbfb, #0abde3, #00d2d3);
+  border-radius: 10px;
+  transition: width 0.5s ease;
+}
+
+/* game area */
+.game-area {
+  flex: 1;
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.word-bubble {
+  position: absolute;
+  background: radial-gradient(circle at 30% 30%, white, #ffe8f0);
+  border: 4px solid #ff9ff3;
+  border-radius: 50%;
+  width: 180px;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: bold;
+  color: #5a3e85;
+  box-shadow: 0 10px 30px rgba(255,107,107,0.3), inset 0 -5px 15px rgba(255,107,107,0.1);
+  animation: bubbleAppear 0.5s ease, floatBubble 3s ease-in-out infinite;
+  cursor: default;
+  transition: transform 0.1s;
+}
+.word-bubble.shake {
+  animation: bubbleShake 0.5s ease;
+}
+.word-bubble.pop {
+  animation: bubblePop 0.4s ease forwards;
+}
+.word-bubble.timeout {
+  animation: bubbleFadeOut 0.5s ease forwards;
+}
+
+.bubble-word {
+  display: block;
+  font-weight: bold;
+  color: #5a3e85;
+  text-shadow: 1px 1px 0 rgba(255,255,255,0.8);
+  z-index: 1;
+}
+.bubble-phonetic {
+  display: block;
+  color: #9b59b6;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  margin-top: 2px;
+  z-index: 1;
+}
+.bubble-chinese {
+  display: block;
+  color: #e17055;
+  margin-top: 1px;
+  z-index: 1;
+}
+.bubble-speaker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ff9ff3;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.9);
+  cursor: pointer;
+  margin-top: 4px;
+  line-height: 1;
+  transition: transform 0.15s, background 0.15s;
+  z-index: 1;
+  padding: 0;
+}
+.bubble-speaker:hover {
+  transform: scale(1.15);
+  background: #ffe8f0;
+}
+.bubble-speaker:active {
+  transform: scale(0.9);
+}
+
+@keyframes bubbleAppear {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes floatBubble {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+@keyframes bubbleShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(6px); }
+}
+@keyframes bubblePop {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.5; }
+  100% { transform: scale(0); opacity: 0; }
+}
+@keyframes bubbleFadeOut {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(0.5) translateY(-100px); opacity: 0; }
+}
+
+.timer-ring {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  height: 8px;
+  background: rgba(255,255,255,0.5);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.timer-ring-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #48dbfb, #ff6b6b);
+  border-radius: 4px;
+  transition: width 0.1s linear;
+}
+
+/* typing area */
+.typing-area {
+  width: 100%;
+  max-width: 500px;
+  z-index: 5;
+  position: relative;
+}
+.typing-display {
+  background: white;
+  border: 3px solid #dfe6e9;
+  border-radius: 25px;
+  padding: 8px 20px;
+  font-size: 24px;
+  font-family: 'Comic Sans MS', 'Chalkboard SE', cursive, sans-serif;
+  text-align: center;
+  color: #5a3e85;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 4px;
+  transition: border-color 0.2s;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+.typing-display:focus-within {
+  border-color: #ff9ff3;
+  box-shadow: 0 4px 20px rgba(255,159,243,0.3);
+}
+.typing-display .typed {
+  color: #48dbfb;
+}
+.typing-display .remaining {
+  color: #b2bec3;
+}
+.typing-display .cursor {
+  animation: blink 0.8s step-end infinite;
+  color: #ff6b6b;
+  font-weight: bold;
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.hint-text {
+  text-align: center;
+  color: #b2bec3;
+  font-size: 12px;
+  margin-top: 4px;
+}
+.hidden-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* character at bottom */
+.character-area {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 40px;
+  z-index: 1;
+  animation: characterIdle 2s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes characterIdle {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-5px); }
+}
+
+/* level complete */
+#screen-level-complete { z-index: 15; }
+.level-complete-stars {
+  font-size: 60px;
+  margin: 20px 0;
+}
+.level-complete-stars .star {
+  display: inline-block;
+  animation: starPop 0.5s ease backwards;
+}
+.level-complete-stars .star:nth-child(1) { animation-delay: 0.2s; }
+.level-complete-stars .star:nth-child(2) { animation-delay: 0.5s; }
+.level-complete-stars .star:nth-child(3) { animation-delay: 0.8s; }
+@keyframes starPop {
+  0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+  60% { transform: scale(1.3) rotate(10deg); }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+.level-message {
+  font-size: 36px;
+  color: #5a3e85;
+  font-weight: bold;
+  margin: 10px 0;
+}
+.level-detail {
+  font-size: 18px;
+  color: #7c5cbf;
+  margin-bottom: 20px;
+}
+
+/* mini game */
+#screen-mini-game { z-index: 15; }
+.mini-title {
+  font-size: 32px;
+  color: #ff6b6b;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.mini-timer {
+  font-size: 48px;
+  color: #feca57;
+  font-weight: bold;
+  margin: 10px 0;
+}
+.mini-area {
+  width: 100%;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #1e2a4a 0%, #2d3e6b 100%);
+  margin: 10px 0;
+}
+.mini-star {
+  position: absolute;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #feca57, #ff9f43);
+  border: 2px solid #fff;
+  color: #fff;
+  font-size: 22px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: starFall linear forwards;
+  box-shadow: 0 4px 15px rgba(254,202,87,0.6);
+  text-transform: uppercase;
+}
+.mini-star::after {
+  content: '⭐';
+  position: absolute;
+  font-size: 14px;
+  top: -8px;
+  right: -4px;
+}
+.mini-star.caught {
+  animation: starCaught 0.3s ease forwards;
+}
+@keyframes starFall {
+  0% { transform: translateY(-60px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(550px) rotate(360deg); opacity: 0.6; }
+}
+@keyframes starCaught {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(2.5) translateY(-30px); opacity: 0; }
+}
+.pause-btn {
+  background: rgba(255,255,255,0.15);
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 2px 10px;
+  line-height: 1;
+  transition: all 0.2s;
+  margin-left: 4px;
+}
+.pause-btn:hover { background: rgba(255,255,255,0.3); transform: scale(1.08); }
+.pause-btn:active { transform: scale(0.95); }
+
+.mini-score {
+  font-size: 28px;
+  color: #feca57;
+  font-weight: bold;
+}
+
+/* victory screen */
+#screen-victory { z-index: 15; }
+.victory-title {
+  font-size: 48px;
+  font-weight: bold;
+  background: linear-gradient(135deg, #feca57, #ff9f43, #ff6b6b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 2s ease infinite;
+}
+.victory-mascot { font-size: 120px; animation: bounce 0.6s ease-in-out infinite; }
+.total-score { font-size: 32px; color: #5a3e85; font-weight: bold; margin: 10px 0; }
+
+/* particles */
+.particle {
+  position: absolute;
+  pointer-events: none;
+  z-index: 20;
+  animation: particleFly 0.8s ease-out forwards;
+}
+@keyframes particleFly {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
+}
+
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+  z-index: 20;
+  animation: confettiFall 3s ease-out forwards;
+}
+@keyframes confettiFall {
+  0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(700px) rotate(720deg); opacity: 0; }
+}
+
+/* floating score */
+.float-score {
+  position: absolute;
+  pointer-events: none;
+  z-index: 25;
+  font-size: 28px;
+  font-weight: bold;
+  color: #feca57;
+  animation: floatUp 1s ease-out forwards;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+@keyframes floatUp {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-80px); opacity: 0; }
+}
+
+/* on-screen keyboard */
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  z-index: 5;
+  padding: 4px 0 0 0;
+}
+.keyboard-row {
+  display: flex;
+  gap: 3px;
+}
+.key {
+  width: 32px;
+  height: 36px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #fafafa 0%, #e8e8e8 100%);
+  border: 2px solid #d0d0d0;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: bold;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  text-transform: lowercase;
+}
+.key.highlight {
+  background: linear-gradient(180deg, #ffe66d 0%, #feca57 100%);
+  border-color: #ff9f43;
+  color: #d63031;
+  transform: scale(1.18);
+  box-shadow: 0 0 16px rgba(254,202,87,0.7);
+  animation: keyGlow 0.6s ease-in-out infinite;
+}
+@keyframes keyGlow {
+  0%, 100% { box-shadow: 0 0 10px rgba(254,202,87,0.5); }
+  50% { box-shadow: 0 0 22px rgba(254,202,87,0.9); }
+}
+.key.correct {
+  background: linear-gradient(180deg, #a0f0c0 0%, #48dbb4 100%);
+  border-color: #00b894;
+  color: #fff;
+  transform: scale(0.95);
+}
+.key.wrong-flash {
+  background: linear-gradient(180deg, #ff7675 0%, #d63031 100%);
+  border-color: #b71c1c;
+  color: #fff;
+  animation: keyShake 0.3s ease;
+}
+@keyframes keyShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+/* responsive */
+@media (max-width: 600px) {
+  #app { height: 550px; border-radius: 25px; }
+  #screen-start .title { font-size: 32px; }
+  #screen-start .mascot { font-size: 70px; }
+  .word-bubble { width: 140px; height: 140px; font-size: 26px; }
+  .btn { padding: 12px 35px; font-size: 18px; }
+  .btn-start { font-size: 22px; }
+  .game-header { padding: 8px 12px; }
+  .header-item { font-size: 14px; }
+  .typing-display { font-size: 22px; padding: 10px 15px; }
+  .level-message { font-size: 26px; }
+  .victory-title { font-size: 32px; }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- clouds decoration -->
+  <div class="clouds">
+    <div class="cloud"></div>
+    <div class="cloud"></div>
+    <div class="cloud"></div>
+  </div>
+
+  <!-- Start Screen -->
+  <div id="screen-start" class="screen active">
+    <div class="title">🌟 趣味打字大冒险 🌟</div>
+    <div class="subtitle">和小动物一起学打字吧！</div>
+    <div class="mascot">🦊</div>
+    <div class="library-selector">
+      <label for="lib-select">📚 词库选择：</label>
+      <select id="lib-select" onchange="game.selectLibrary(this.value)">
+        <option value="primary">🏫 小学</option>
+        <option value="junior">📖 初中</option>
+        <option value="senior">📚 高中</option>
+        <option value="ket">🎯 KET</option>
+        <option value="pet">🎯 PET</option>
+        <option value="cet4">🎓 大学四级</option>
+        <option value="cet6">🎓 大学六级</option>
+        <option value="ielts">🌍 雅思</option>
+        <option value="toefl">🌍 托福</option>
+      </select>
+    </div>
+    <button class="btn btn-start" onclick="game.start()">🎮 开始冒险</button>
+    <div style="margin-top:15px;color:#b2bec3;font-size:14px;">点击按钮或按任意键开始</div>
+  </div>
+
+  <!-- Game Screen -->
+  <div id="screen-game" class="screen">
+    <div class="game-header">
+      <div class="header-item">
+        <span class="icon">🏆</span>
+        <span id="game-level">第1关</span>
+      </div>
+      <div class="header-item">
+        <span class="icon">⭐</span>
+        <span id="game-score">0</span>
+      </div>
+      <div class="hearts" id="game-hearts"></div>
+      <div class="combo-display" id="combo-display">🔥 x1</div>
+      <button class="pause-btn" id="pause-btn" onclick="game.togglePause()" title="暂停 (Esc)">⏸</button>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+    </div>
+    <div class="game-area" id="game-area">
+      <div class="character-area">🦊</div>
+    </div>
+    <div class="typing-area">
+      <div class="typing-display" id="typing-display">
+        <span class="remaining" id="display-text"></span>
+        <span class="cursor">|</span>
+      </div>
+      <div class="hint-text" id="hint-text">⌨️ 点击上方彩色区域开始打字吧！单词输完自动提交~</div>
+      <div class="keyboard" id="keyboard">
+        <div class="keyboard-row" id="kb-row1"></div>
+        <div class="keyboard-row" id="kb-row2"></div>
+        <div class="keyboard-row" id="kb-row3"></div>
+      </div>
+    </div>
+    <input type="text" class="hidden-input" id="hidden-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  </div>
+
+  <!-- Level Complete -->
+  <div id="screen-level-complete" class="screen">
+    <div class="level-message" id="lc-message">太棒了！</div>
+    <div class="level-complete-stars" id="lc-stars"></div>
+    <div class="level-detail" id="lc-detail"></div>
+    <button class="btn btn-next" id="lc-btn" onclick="game.nextLevel()">▶ 下一关</button>
+  </div>
+
+  <!-- Mini Game -->
+  <div id="screen-mini-game" class="screen">
+    <div class="mini-title">🌟 奖励关卡：抓住流星！</div>
+    <div class="mini-timer" id="mini-timer">20</div>
+    <div class="mini-area" id="mini-area"></div>
+    <div class="mini-score">✨ 捕获: <span id="mini-caught">0</span></div>
+    <div class="hint-text" id="hint-text">⌨️ 按流星上的字母键来捕获它们！</div>
+  </div>
+
+  <!-- Victory -->
+  <div id="screen-victory" class="screen">
+    <div class="victory-title">🎉 恭喜通关！🎉</div>
+    <div class="victory-mascot">🦄</div>
+    <div class="total-score">总分: <span id="final-score">0</span> ⭐</div>
+    <div style="color:#7c5cbf;font-size:18px;margin-bottom:20px;">你是打字小英雄！</div>
+    <button class="btn btn-start" onclick="game.restart()">🔄 再来一次</button>
+  </div>
+</div>
+
+<script>
+// ─── Game Engine ──────────────────────────────────
+const game = {
+  // state
+  screen: 'start',
+  level: 1,
+  score: 0,
+  totalScore: 0,
+  lives: 5,
+  maxLives: 5,
+  wordsCleared: 0,
+  wordsNeeded: 0,
+  combo: 0,
+  maxCombo: 0,
+  isPaused: false,
+  currentWord: '',
+  wordTimer: 0,
+  wordTimeLimit: 0,
+  wordInterval: null,
+  timerInterval: null,
+  miniGameActive: false,
+  miniTimer: 0,
+  miniCaught: 0,
+  miniInterval: null,
+  miniSpawnInterval: null,
+  bonusLevels: [2, 4],
+
+  // ─── Word Bank ────────────────────────────────
+  selectedLibrary: 'primary',
+  words: {},
+
+  wordBank: {
+    primary: { name: '小学', words: 'cat dog sun hat red big run sit hot cup bed fun pig map bus net fox jam key log pen bug lip mud nut pop bag top box cow day ear egg eye fan fly gun ham ice jar kid leg man map owl pie pot rat saw sky toy van wet zoo arm bat bee bow bun can dip dot fin gap gum hen ill job kit lad mad nap odd pat rag sip tap use web yak zip ask act age aid aim air all and ant any ape are art ash ate awe axe bad ban bar bat bay bet bib bin bit bog bud bug bun bus but buy cab cam cap cry cub cut dad dam den dew did dig dim din dip dot dry dud dug dye eat eel egg ego elm emu era eve ewe eye fan far fat fax fed fib fig fin fit fix fob foe fog fop for fox fry fun fur gag gal gap gas gel get gig gin git gob god got gum gun gut guy gym had hag ham has hat hay hem hen hep her hew hex hid him hip his hit hob hod hog hop hot how hub hue hug huh hum hut ice icy ill imp ink inn ion ire irk its jab jag jam jar jaw jay jet jib jig job jog jot joy jug jut keg ken key kid kin kit lab lad lag lap law lax lay lea led leg let lid lie lip lit lob log lop lot low lug mad man map mar mat maw may men met mid mix mob mod mom mop mud mug mum nab nag nap net new nil nip nit nob nod nor not now nun nut oaf oak oar oat odd off oft oil old one opt orb ore our out ova owe owl own pad pal pan pap par pat paw pay pea peg pen pep per pet pew pig pin pip pit ply pod poi pop pot pow pox pro pry pub pug pun pup put rag ram ran rap rat raw ray red ref rep rib rid rig rim rip rob rod roe rot row rub rug rum run rut rye sac sad sag sap sat saw sax say sea sec see set sew she shy sin sip sir sit six ski sky sly sob sod son sop sot sow soy spa spy sty sub sue sum sun sup tab tad tag tam tan tap tar tat tax tea ted tee ten the thy tic tie tin tip toe ton too top tot tow toy try tub tug tup tut two urn use van vat vet vex via vie vim vow war was wax way web wed wet who why wig win wit woe wok won woo wow yak yam yap yaw yea yes yet yew yin you zap zed zig zip zoo book tree fish bird play jump blue star moon cake bear duck frog rain snow door fire gold ship king milk rose song ball hand foot head nose desk lamp ring swim wind warm cool kind dark east west north south food wood line long love life time year week name game home room school phone green happy apple cloud dance smile tiger water music light sweet brave dream peace queen horse plant stone world candy house ocean river bread grape table chair clock panda robot train black white brown three seven eight nine ten rabbit flower monkey garden pretty rocket sunset forest golden winter spring summer planet butter cookie peanut silver turtle puzzle bubble gentle island jungle pencil window orange banana animal friend market purple yellow school rainbow unicorn sunshine crystal diamond magical fantasy glitter sparkle princess treasure kingdom cupcake mermaid dolphin penguin balloon teacher kitchen picture morning chicken lantern harvest'},
+    junior: { name: '初中', words: 'also area army away baby base bath beat bell belt blue boat body bone boss bowl burn busy calm camp card care case cell chat chip city club coal code coin cool core crew crop cure dark date dead deal dear deep diet dish disk dock dose draw drop drug duty earn east easy edge emit else even ever evil exam face fact fade fail fair fake fame farm fast fate fear feed feel film find fine fire firm fish flag flat flow fold folk food fork form fort free from fuel fund gain game gate gift girl give glad goal gold golf good grab gray grow guru hair half hall hand hang hard harm hate have head heal hear heat help here hero high hill hint hire hold hole holy hope host hour huge hung hunt hurt idea iron item join joke jump jury just keen keep kick kill kind king kite knee knit knot know lack lady lake lamp land last late law lead leaf lean left lend less life lift like limb line link list live load loan lock logo long look lord loss lost loud love luck lung mail main make male mall mama mark mask mass mate meal mean meat meet menu mere mild milk mind mine miss mode mood moon more most move much must myth name near neck need news next nice nine node none nose note okay once only onto open oral oven over pace pack page paid pain pair palm pant park part pass past path peak peer pick pile pine pink plan play plot plus poem poet pole poll polo pond pool poor pork port pose post pour pray prey pull pump pure push quit race rail rain rank rare rate read real rich ride ring rise risk road rock role roll roof room root rope rose ruin rule rush safe said sake sale salt same sand save scan seal seat seed seek seem self sell send sept shed ship shoe shop shot show shut sick side sign silk sink site size skin slip slow snow soap soft soil sold sole some song soon sort soul spin spot star stay stem step stir stop such suit sure swim tail take tale talk tall tank tape task team tear tell tend tent term test text than that them then they thin this tide tidy till tilt time tiny tire toad told toll tone tool tour town trap tree trip tube turn twin type ugly unit upon used user vary vast very view visa void vote wage wait wake walk wall want warm warn wash wave weak wear weed week well west what when whom wide wife wild will wind wine wing wire wise wish with wolf wood word work worm worn wrap yard yeah year zone zoom able acid aged ally amid arch army aunt auto awry axle back bail bait bald bale band bang bank bare bark barn base bask bath bead beak beam bean bear beat beef been beet bell belt bend bent best bias bike bill bind bite blah blat blob blot blow blue blur boar boat body bold bolt bomb bond bone book boom boon boot bore born boss both bowl brew brim bulk bull bump bunk bunt buoy burn burr bury bush bust busy buzz cage cake calf call calm came camp cane cape card care cart case cash cast cave cell chat chin chip chop cite clad clam clan clap claw clay clef cleft clip clod clog clop clot club clue coal coat cock code coif coil coin cold cole colt comb come cone cook cool cope copy cord core cork corn cost cosy cozy crab crew crib crop crow cube cuff cult cunt curb cure curl curt cute daft dale dame damp dare dark dart dash data date daub daunt dawn dead deaf deal dean dear debt deck deem deep deer deft defy dell dent deny desk dial dice died diet dill dime dine dint dire dirt dish disk diva dive dock doer does dome done doom door dose dote down doze drab drag draw dray drip drop drug drum dual duck duct dud due duff duke dull dumb dump dune dung dunk dure dusk dust duty dyed each earl earn ease east easy edge edit else emit envy epic even ever evil exam exit eyed face fact fade fail fair fake fall fame fang fare farm fast fate faun faux faze fear feat feed feel feet fell felt fern fete feud file fill film find fine fire firm fish fist five flag flak flam flap flat flaw flax flea fled flew flex flip flit flog flop flow foal foam foil fold folk fond font food fool foot ford fore fork form fort foul four fowl free fret frog from fuel full fume fund funk fury fuse fuss fuze gaff gaga gage gain gait gala gale gall game gang gaol gape garb gash gasp gate gave gaze geek gene gent germ gift gild gill gilt gird girl gist give glad glee glen glib glim glob glop glow glue glug glum glut gnar gnaw goad goat goes gold golf gone gong good goof gore gory gosh gown grab gram gray grew grid grim grin grip grit grow gull gulp gush gust guys habe hack haft hail hair hale half hall halo halt hand hang hare hark harm harp hash hasp hast hate hath haul have haze hazy head heal heap hear heat heed heel heft heir held helm help hemp herb herd here hero hers hewn hide high hike hill hilt hind hint hire hiss hive hoar hoax hock hoe hoist hold hole holy home hone hood hook hoop hoot hope horn hose host hour howl huff huge hulk hull hump hung hunk hunt hurl hurt husk hymn hype icon idea idle idol inch info into iris iron isle item jack jade jail jamb jape jazz jean jeer jerk jest jibe jilt jive join joke jolt josh jowl jury just kale keel keen keep kelp kept kick kill kiln kilt kind king kiss kite knee knew knit knob knot know knur lace lack lacy lady laid lake lamb lame lamp land lane lard lark lash lass last late lath laud lava lawn lazy lead leaf leak lean leap left lend lens less lest levy liar lick lieu life lift like lilt lily limb lime limn limp line link lint lion list live load loaf loam loan lobe loch loci lock loft logo lone long look loom loon loop loot lord lore lose loss lost loud lour love luck lull lump lung lure lurk lush lust lute mace made magi maid mail maim main make male mall malt mane many mare mark mars mash mask mass mast mate maul maze mead meal mean meat meek meet meld melt memo mend menu meow mere mesh mess mete mewl mild mile milk mill mime mind mine mint mire miss mist mite moan moat mock mode mold mole moll molt monk mono mood moon moor moot mope more morn moss most mote moth move much muck muff mule mull mump mums munch mung munt muse mush musk muss must mute mutt myth nail name nape navy near neat neck need neon nest next nice nigh nine node none noon norm nose nosy note noun nous nova nude null numb oars oath obey odds odes odor offs oils oily oink okay olds omen omit once ones only onto onus onyx ooze opal open oral orgy ouch ours oust oval oven over ovum owed owes owls owns oxen pace pack page paid pail pain pair pale palm pane pang pant papa pare park part pass past pate path pave pawn peak peal pear peat peck peek peel peep peer pelt pend pent peon pep perk pert perv pest phew pick pied pier pike pile pine ping pink pint pion pipe pith pity plan play plea plod plop plot plow ploy plug plum plus pock poem poet poke pole poll polo pomp pond pone pons pony pool poop poor pope pops pore pork port pose post pour pram pray prep prey prig prim prod prof prom prop prow puny pure purl push putt pyre quad quay quid quip quit quiz race raft rage raid rail rain rake ramp rang rank rant rapt rare rash rasp rate rave raze read real ream reap rear redo reed reef reek reel rein rely rend rent rest rice rich ride rift rill rind ring riot ripe rise risk road roam roan roar robe rock rode role roll romp rood roof rook room root rope rose rosy rote rout rove row rubs ruby rude rued rues ruin rule rump rung runt ruse rush rust sack safe saga sage said sail sake sale salt same sand sang sank sass save scab scan scar scat scud scum seal seam sear seat sect seed seek seem seen seep self sell semi send sept serf sewn shag sham shed shim shin ship shoe shoo shop shot shun shut sick side sift sigh sign silk sill silt sine sing sink sire site size skid skim skin skip skit slab slag slam slap slat slay sled slew slid slim slit slob sloe slop slot slow slug slum slur slush smog smug snap snag snap snip snob snot snow snub snug soak soap soar sock soda sofa soft soil sold sole some song soon soot sore sort soul soup sour sown spam span spar spec sped spin spit spot spry spur stab stag star stay stem stew stir stop stub stud stun such suds suet suit sulk sump sung sunk suns sups surf swab swag swam swan swap swat sway swig swim swob swop tabs tack tact tail take tale talk tall tame tamp tang tank tape taps tare tarn tarp task taxi teak teal team tear tech teem teen tell temp tend tent term test text than that them then they thin this thus tick tide tidy tied tier tiff tile till tilt time tine tint tiny tire toad toed tofu toga toil told toll tomb tome tone tons took tool toot tore torn tote tour town trap tray tree trek trip trod trot true trug tuba tube tuck tuft tuna tune tung turf turn tusk tuft twin type ugly ulna undo unit unto upon urea urge used user uses vain vale vamp vane vary vase vast veal veer veil vein vena vent verb very vest veto vial vice view vile vine visa vise void volt vote wage wail wait wake walk wall wand want ward warm warn warp wart wary wash wasp wave wavy waxen weak weal wean wear weed week weep weld well wend went wept were west what when whom wick wide wife wild will wilt wily wimp wind wine wing wink wipe wire wise wish wisp with wits wolf womb wont wood woof wool word wore work worm worn wove wrap wren writ yank yard yarn yawl year yell yoga yoke yolk your zeal zebra zero zinc zone zoom'},
+    senior: { name: '高中', words: 'abandon ability abroad absence absolute absorb abstract abundant academic accept access accident accompany accomplish account accurate achieve acknowledge acquire adapt adequate adjust admiration admission adopt advance adventure advocate affect afford agency aggressive agreement agriculture allocate allowance alternative ambition analysis ancestor anniversary announce annual anxiety apparent appetite appliance application appoint appreciate approach appropriate approval approximate argument arrange arrest arrival article associate assume atmosphere attach attain attempt attend attitude attract audience authority available average awkward bacteria balance barrier battle behalf behave behavior belief benefit billion biography biology blanket boundary budget building business calculate campaign capable capacity capital capture career category caution celebrate ceremony challenge champion channel chapter character charity charter chemical circumstance civilian claim classic climate collapse colleague collection colonial combine comedy comfort command comment commerce commission commit committee communicate community companion company compare comparison compete competition competitive complain complex component compose composition compound comprehensive compromise computer concentrate concept concern conclude concrete conduct conference confidence confirm conflict confront confuse congress connect conscious consequence conservative consider consistent constant construct consumer contact contain contemporary content continue contract contrast contribute contribution convention convert convince cooperate coordinate corporation correspond council counsel country courage creative criminal crisis criterion criticism criticize crucial culture curious current customer debate decade decline defeat defense deficit define definitely definition delegate deliver democracy dependent deposit describe desert deserve design desire desperate despite destination destroy determine develop device devote dialogue differ dignity dilemma dimension dinner diplomacy disappear disaster discipline discover discuss disease dismiss disorder display dispute distance distinct distribution diversity division document domestic dominant dominate donation doubtful downtown dramatic economy edition education effective efficiency efficient elderly election element eliminate embassy emerge emergency emotion emphasis employee employer employment enable encounter encourage energy enforce engage enhance enormous ensure enterprise enthusiasm entire entitle entrance entrepreneur entry environment episode equal equation equipment essential establish estate estimate evaluate eventually evidence evolution evolve examine exception excess exchange exciting executive exercise exhibit existence expansion expense experiment expert expertise explain exploit explore export expose extra extreme facility factor failure fairly fashion feature federal fiction fighter finally finance finding formula foundation founder fraction freedom frequency frontier function fundamental further furthermore galaxy gallery generate genuine gesture global governor graduate growth guarantee guidance handle heritage highlight historian historical horizon humanity identify identity illustrate imagination immigrant implement implication import impose impossible impress impressive incident income incorporate increase increasingly indicate individual industrial industry inflation influence initial initiative innocent innovation inquiry insist inspect install instance institute instrument insurance integrate intellectual intelligence intense intention interaction interest internal interpret intervention invest investigate investment journal justice justify landscape largely launch leadership league legal lesson liberal liberty license likely literary literature logical loyalty magazine maintain management manufacturer margin massive material maximum measure mechanism medium mental mention merchant merely military minimum ministry minority mission moderate monitor mortgage motivation mountain movement multiple muscle museum narrative national negotiate neighborhood nervous network nevertheless nuclear numerous nutrition objective observe obstacle obtain obvious occasion occupy operation opinion opponent opportunity oppose opposite optimism option original outcome overcome overseas owner painful painting parliament participant particularly passage passion patient pattern percentage performance period permanent permission personality perspective phenomenon philosophy platform pleasure politics popularity population portion portrait possess potential poverty practical precisely predict presence preserve pressure priest primarily principle priority prisoner probably procedure processing profession professor profile program promote proportion proposal protest provider province provision psychological psychology pursuit qualify quantity radical realistic reasonable recovery reduction reference reflect reform regime region register regulate relation release relevant relief religion religious rely remain remarkable remind remove repeatedly represent reputation requirement reserve resident resign resist resolve resort resource respond restore restrict retail retain reveal revenue revolution romantic roughly routine satellite satisfy scandal scholar scientific security segment selection sensitive separate sequence severe sexual shelter silence similar simply skilled slavery socialist society somewhat southern speaker specialist species spiritual spokesman stability stadium standard statistics strategy strength strengthen stress struggle substance sufficient suggest summary support suppose supreme surface surgery surround survival survive suspect suspend sustain symbol sympathy tackle target technique technology tension territory terrorist theme therapy threaten tolerance tourism towards tradition tragedy transfer transform transition translate transparent transportation tremendous treaty trend trial typical ultimate undergo understanding unemployment unique universal university urban version veteran victim violence virtually visible visitor visual vulnerable weapon welfare withdraw witness workshop yourself abandon'},
+    ket: { name: 'KET', words: 'able about across act add afraid after again ago agree air airport all almost along already also always among and angry animal another answer any anyone anything anywhere apple area arm arrive art as ask at aunt autumn away back bad bag ball banana band bank basket bath be beach bean bear beat beautiful because bed bedroom before begin behind believe bell below beside best better between big bike bill bird birth bit black blanket block blood blow blue board boat body boil book bored born borrow both bottle bottom bowl box boy bread break bridge bright bring brother brown brush build burn bus business but butter buy by bye cab cage cake call camera camp can cap car card care careful carry cat catch cause cent centre century chair champion change chase cheap check cheese chicken child chips chocolate choose cinema circle city class clean clear climb clock close cloth cloud club coat coffee cola cold collect college colour comb come comfortable company compete computer cook cool corner cost cough could country cousin cover cross crowd cry cup curly cut dad daily dance danger dark date daughter day dead dear decide deep dentist describe desk develop diary dictionary die different difficult dining dinner dirty dish do doctor dog doll dollar door double down draw dream dress drink drive driver drop dry during each ear early earn earth east easy eat egg eight eighty either electric elephant else empty end engine enjoy enough enter entrance envelope eraser even evening event ever every exam example except excited excuse exercise expect expensive explain eye face fact factory fail fair fall family famous fan farm fast fat father favourite feel ferry field fifteen fifth fifty fill film final find fine finger fire first fish five flag flat flight floor flower fly follow food foot football for foreign forest forget fork form forty four fourteen fourth free fresh friend from front fruit full fun funny furniture further future game garage garden geography get gift giraffe girl give glad glass go goal goat gold good goodbye grandchild grandparent grass great green grey ground group grow guess guest guide guitar gun guy hair half hall hamburger hand happen happy hard hat hate have he head health hear heart heavy height hello help her here hers herself hi high hill him himself his history hit hobby hockey hold holiday home homework hope horse hospital hot hotel hour house how hundred hungry hurry hurt husband ice idea if important in include information insect inside instead instrument interest into island it its itself jacket jam jeans job join juice jump just kangaroo keep key kick kid kill kilo kind king kitchen kite knee knife knock know lake lamp land language laptop large last late later laugh learn least leave left leg lemon lemonade less lesson let letter level library lie life light like line lion list listen little live long look lose lot loud love low luck luggage lunch machine magazine make man many map market match maths matter may me meal mean meat meet meeting member message metre middle might milk million mind mine minus minute mirror miss mistake model moment money monkey month moon more morning most mother motorbike mountain mouse mouth move much mum museum mushroom music must my myself name national near neck need net never new news next nice night nine ninety no noise none normal north nose not note nothing notice now number nurse object o\'clock occupation of off office often oil old olympic on once one onion only open opposite or orange order other our out outside over own pack page paint pair pan pants paper pardon parent park part party pass passport pasta pay pen pencil people pepper perfect person pet phone photo physics piano pick picnic picture piece pilot pink place plan plane plant plastic plate please pocket point police polite pool poor popular possible post potato prefer prepare price problem programme project public pull pupil purple put quarter queen question quick quiet quite rabbit race radio railway rain read ready real really reason receipt red remember repeat restaurant return rice ride right river road robot rock room round rubber rugby ruler run sadly safe sail salad salt same sand sandwich saturday sausage save say school science scissors seat second see sell send sentence serve seven seventy share she sheep shelf ship shirt shoe shop short should shout show shower shut sick side sight sign silly silver simple since sing singer sister sit six sixty size skate ski skirt sky sleep slice slow small smoke snack snow so soap soccer sock sofa some someone something sometimes son soon sorry soup south space speak special spell spend spoon sport spring stamp stand star start station stay steak steal still stomach stop store storm story street strong student study subject such sudden sugar summer sun sunday supermarket suppose sure surname surprise sweet swim swimming table take talk tall taxi tea teach team teenager telephone television tell ten tennis tenth terrible test than thank that the their them then there these they thin thing think third thirsty thirteen thirty this those though thousand three through throw thursday ticket tidy tie tiger till time tired tissue to today together toilet tomato tomorrow tonight too tooth toothache top towel tower town traffic train travel tree trip trouble trousers true try tuesday turn twelve twenty twice type tyre umbrella uncle under understand until up us use usually valley vegetable very video view village violin visit volleyball wait wake walk wall want warm wash watch water way we wear weather website week weekend well west western wet what wheel when where which while white who whole whose why wide wife will win wind window windy wine wing winner winter wish with woman wonderful wood word work world worse worst would write wrong year yellow yes yesterday yet you young your zero zoo'},
+    pet: { name: 'PET', words: 'ability able about above abroad accept according achieve act action activity actually address adult advertise affect afford afraid after again against agent ago agree ahead allow almost alone along already also although always among amount ancient anger angry animal announce another answer anxiety anxious any anyone anything anyway apart apartment appear apply approach area argue arm army around arrange arrival arrive art article artist as ask aspect associate assume at attack attention attitude attract audience author authority available avoid award aware away back bad bag ball bank bar base be basic basis beat beautiful because become bed before begin behavior behind believe benefit best better between beyond big bill bit black blood blue board body book born both box boy break bring brother budget build building business but buy by call campaign can candidate capital car card care carry case catch cause cell center central century certain certainly chair challenge chance change character charge check child choice choose church citizen city civil claim class clear clearly coach cold collection college color come commercial common community company compare computer concern condition conference Congress consider consumer contain continue control cost could country couple course court cover create crime cultural culture cup current customer cut dark data daughter day dead deal death debate decade decide decision deep defense degree Democrat describe design despite detail determine develop development die different difficult dinner direction director discover discuss discussion disease do doctor dog door down draw dream drive drop drug during each early east easy eat economic economy edge education effect effort eight either election else employee energy enjoy enough enter entire environment environmental especially establish even evening event ever every everybody evidence exactly example executive exist expect experience expert explain eye face fact fail fall family far fast father fear federal feel few field fight figure fill final finally find fine finger finish fire firm first fish five floor fly focus follow food foot for force foreign forget form former forward four free friend from front full fund future game garden gas general generation get girl give glass go goal good government great green ground group grow growth guess gun guy hair half hand hang happen happy hard have he head health hear heart heavy help her here herself high himself his history hit hold home hope hospital hot hotel hour house how however huge human hundred husband I idea identify if image imagine impact important improve in include including increase indeed indicate individual industry information inside instead institution interest interesting international interview into investment involve issue it item its job join just keep key kid kill kind kitchen know knowledge land language large last late later law lawyer lay lead leader learn least leave left leg legal less let letter level lie life light like likely line list listen little live local long look lose loss lot love low machine magazine main maintain major majority make man manage management manager many market marriage material matter may maybe me mean measure media medical meet meeting member memory mention message method might military million mind minute miss mission model modern moment money month more morning most mother mouth move movement movie Mr much music must my myself name nation national natural nature near nearly need network never new news newspaper next nice night nine no none nor north not note nothing notice number occur of off offer office officer official often oil ok old on once one only onto open operation opportunity option or order organization other our out outside over own owner page pain painting paper parent part participant particular particularly partner party pass past patient pattern pay peace people per perform performance perhaps period person personal phone physical pick picture piece place plan plant play player PM point police policy political politics poor popular population position positive possible power practice prepare present president pressure pretty prevent price private probably problem process produce product production professional professor program project property protect prove provide public pull purpose push put quality question quickly quite race radio raise range rate rather reach read ready real reality realize really reason receive recent recently recognize record red reduce reflect region relate relationship religious remain remember remove report represent Republican require research resource respond response rest result return reveal rich right rise risk road rock role room rule run safe same save say scene school science scientist sea season seat second section security seek seem sell send senior sense series serious serve service set seven shake share she shoot short shot should shoulder show side sign significant similar simple simply since single sister sit site six size skill skin small smile so social society soldier some somebody someone something sometimes son soon sort source south southern space speak special specific speech spend sport spring staff stage stand star start state statement station stay step still stock stop store story strategy street strong structure student study stuff style subject success successful such suddenly suffer suggest summer support sure surface system table take talk task tax teach teacher team technology television tell ten tend term test than thank that the their them themselves then theory there these they thing think third this those though thought thousand threat three through thus time to today together tonight too total tough toward town trade traditional training travel treat trial trip trouble true truth try turn TV two type under understand unit until up upon us use usually value various very victim view violence visit voice vote wait walk wall want war watch water way we weapon wear week weight well west western what whatever when where whether which while white who whole whom whose why wide wife will win wind window wish with within without woman wonder word work worker world worry would write wrong yard yeah year yes yet you young your yourself'},
+    cet4: { name: '大学四级', words: 'abandon ability aboard abroad absence absolute absorb abstract abundant academy accelerate accept access accommodate accompany accomplish accord account accumulate accurate accuse achieve acknowledge acquire adapt addition adequate adjust administration admire admission adopt adult advance advantage adventure advertise advocate affair affect afford afterward agency agenda aggressive agreement agriculture alcohol alert alliance allocate allowance alter alternative amateur ambition amount amuse analysis ancestor anchor angle anniversary announce annual anticipate anxiety apart apparatus apparent appeal appetite appliance applicant application appoint appreciate approach appropriate approve approximate arbitrary architect architecture arouse arrange arrest arrival artificial aspect assemble assess assign assist assume atmosphere attach attain attempt attend attitude attract attribute audience authority automatic automobile available avenue average avoid await award aware awful awkward bacteria badge balance ban band bang bankrupt banner bargain barrier base bat bath battery battle bay beam bean bear beard beast beat become behalf behave belief belly belong bend beneath beneficial besides betray bible bid bind biology bite bitter blade blame blank blast blaze blend bless blind block bloom blossom blow boast bold bolt bomb bond boom boost border bore borrow boss bounce bound bow bowl boycott brake brand brass breadth breast breed breeze brick brief brilliant broad broadcast broken brow bubble bud budget bug bulk bullet bump bunch bundle burden bureau burn burst bury bush bust butcher butterfly cab cabin cabinet cable café cage calculate call calm camel campaign campus can cancel candidate capable capacity capture carbon career cargo carpenter carriage cast casual catalog category caution cease cent centigrade ceremony certificate chain chalk challenge chamber champion channel chaos chapter character charity charm chart charter chase cheap check cheek cheer chemical chest chief childhood chill chin chip choke chop Christian cigar circuit circular circumstance citizen civil civilian claim clap clarify clash classic classify clause clerk client cliff cling clinic clip cloak clockwise clone closet clue clumsy coach coal coarse code coil collapse colleague collection collision colonial colony column combat combine comedy comfort comic command commence comment commerce commission commit communicate community companion comparable comparative comparison compass compel compete competent competition competitive complain complaint complex complicate component compose composition compound comprehension comprehensive comprise compromise compute conceal concede concentrate concept concern concession conclude concrete condemn condense condition conduct conference confess confidence confine confirm conflict conform confront confuse congratulate congress conjunction connect conquer conquest conscience conscious consequence consequently conservation conservative considerable considerate consist consistent constant constitution construct consult consume contact contain contemporary content contest context continual continuous contract contradict contrary contrast contribute contribution controversial convenience conventional convey convince cooperate coordinate copper copy cord core corn corner corporate correspond correspondence corridor corrupt costume cottage council counsel count counter countryside county courage course court cousin cover crack craft crash crawl cream create creative creature creep crew crime criminal crisis critic critical criticism criticize crop crown crucial crude cruel crush crystal cube cue cultivate culture cupboard curiosity curious curl currency current curriculum curse curtain cushion custom cycle dairy dam damage damp dash data dawn dealer debate debt decade decay deceive decent deck declare decorate decrease deduct deed deer defeat defect defence defend define definitely delegate delete deliberate delicate deliver demand democracy democratic demonstrate dense deny depart departure dependent depict deposit depress derive descend describe desert deserve design desirable desire despair desperate despite destination destroy destruction detail detect determine devise devote diagram dial dictate differ digest digital dignity dilemma dim dimension diminish dip diplomatic dirt disappear disaster discard discharge discipline discount disguise disgust dish disk dislike dismiss disorder display dispose dispute dissolve distant distinct distinction distinguish distribute disturb ditch dive diverse dividend divorce documentary domestic dominant dominate donation donkey dorm dose dot doubt doubtful downward draft drag dragon drain drama dramatic draw dreadful drift drill drip drum drunk dumb dump durable dusk dust duty dwarf dye dynamic eager eagle earnest earthquake ease echo economic economical economy edit edition editor educate effective efficiency efficient elaborate elastic elbow elderly elect electrical electron electronic elegant element elementary elevator eliminate elsewhere embarrass embrace emerge emergency emit emotion emperor emphasis empire employ employee employer employment enable enclose encounter encourage endless enforce engage engine enhance enormous enrich enroll ensure enterprise entertain enthusiasm enthusiastic entitle entry envelope environment envy equal equation equip equivalent era erect error essay essential establish estate estimate evaluate eve evidence evident evil evolution evolve exact exaggerate exceed exceedingly except exception excess exchange excitement exclaim exclude exclusively excursion execute executive exercise exert exhaust exhibit existence exit expand expansion expect expenditure expense experimental expert explain explicit explode exploit explore export expose extend extensive exterior external extinct extra extraordinary extreme fabric facilitate facility factor fade failure faint fair fairly faith faithful false fame famine fancy fantastic fare farewell fascinate fashion fatal fate fatigue fault favorable favorite feasible feather feature federal fee feedback female fertile fertilizer festival fiber fiction fierce filter finally finance finding fine firm flame flash flat flavor flee fleet flesh flexible flight flock flour flourish fluent fluid focus fog fold folk fond forbid force forecast forehead foreign forge formal format formation former formula forth fortnight fortunately forward foundation fraction fragment frame framework frank freight frequency friction friendly frog frontier frost frown fruitful frustrate fulfill function fund fundamental funeral furthermore gain gallery gallon gang gap garbage gardener gas gaze gear gene generally generate generous genius gentle genuine geography geometry germ gesture ghost giant glance glare glimpse global globe glorious glory glove glow glue goodness gorgeous govern governor grab grace gradual graduate grain grand grant grape graph grasp grateful grave gravity graze greed greenhouse greet grief grind grip grocery gross growth guarantee guard guidance guilty gulf gum guy gym habitat halt ham handful handle handwriting handy harbor harden hardly hardship hardware harm harmony harness harsh haste hatred hay hazard headquarters heal heap heaven heel height helicopter hell helmet helpful helpless hen hence herb herd heroic highlight highway hint hip historic historical hollow holy honey honorable hook hopeful horizon horn horrible horror horsepower host hostile household humble humor hunger hunt hydrogen ideal identical idle ignorance illustrate image imaginary imagination imitate immense immigrant impact impatient implement implication imply import impose impress impression impulse incident incline increasingly incredible independence index indicate indifferent indispensable individual indoors industrial inevitable infant infect infer inferior infinite inflation influence influential inform ingredient inhabitant inherit initial initiative injure injury inn inner innocent input inquiry insect insert insist inspect inspire install instance instinct institute instrument insult insurance integrate intellectual intelligence intense intensive intention interaction interfere interior intermediate internal interpret interval intimate invasion invest investigate investment invisible involve isolate issue jail jam jet jewel joint joke journal journalist journey joyful judgment jungle junior jury justify keen keyboard kick kid kindness kingdom kit knee kneel knit knock knot label laboratory ladder lag landscape lane lap largely laser latter launch laundry lavatory lawn layer layout leader leadership leading leak lean leap learned lease leather lecture legal leisure lens lest lever liable liberal liberty license lick lid likewise limb limitation liter literary literature liver loaf loan lobby local locate lodge log logic loose lord lorry loss loyal loyalty lucky luggage lump lung luxury machinery magic magnet magnificent maid mainland maintain maintenance male management mankind manner manual manufacture manufacturer marathon margin marine mark mask mass massive mate mathematical mature maximum mayor mechanic mechanical medal medical medium melt memorial merchant mercy mere merit metric microphone microscope mild military mill mineral minimum minister ministry minor miracle miserable missile missing mission mist misunderstand mixture mobile mode moderate modest modify moist molecule monitor monument mood moral moreover mosquito mostly motion motivate mount movie mud multiple murder muscle museum mushroom mutual mysterious myth naked namely nationality naturally naval navigation navy nearby neat necessarily necessity needle negative neglect negotiate neighborhood nerve nest neutral nevertheless nightmare noble nod noise nonsense normal noticeable notify notion novel nuclear nuisance numerous nursery nutrition obey object objection objective obligation observation observe obstacle obtain obvious occasion occupation occupy occurrence offend offense offensive official onion opening opera operational operator opponent opportunity oppose optical optimistic option orbit orchestra orderly organ organic organism organization organize origin original otherwise ounce outcome outer outlet outline outlook output outset outstanding oven overall overcome overlook overnight overseas overtake owing ownership oxygen pace pack package packet pad painful palm pan panel panic pants parade paragraph parallel parcel parliament particle particularly partly partner passion passport paste pat patch patience paw payment peak peasant peculiar peer penalty penetrate penny perceive percent perception perfect perform perfume permanent permission persist personality personnel perspective pessimistic petrol petroleum phase phenomenon philosopher philosophy phrase physician physicist pillar pillow pilot pin pinch pine pink pint pioneer pit pitch planet plantation plastic platform plentiful plot plug plunge plural plus poetry poison pole policy polish politician poll pollutant pollution pond pool pope popular population porch portable porter portion portrait pose positive possess possibility postage poster postpone potential pour poverty powder practically pray precaution preceding precise predict preface prefer preference prejudice preliminary premier preparation preposition prescribe presence preserve president press pressure presumably prevail prevent previous priest primarily primary prime primitive prince principal principle prior priority privacy private privilege probable probe procedure proceed process procession produce product profession profile profit progressive prohibit project prominent promise promote prompt pronoun proof property proportion proposal propose prospect prosperity protect protein protest provided province provision provoke psychological pub publication publicity publish pulse pump punch punctual purchase purple pursue puzzle qualification qualify quantity queue quit quiver quiz quotation quote racial rack radar radiation radical rage raid rail rally range rank rare rarely rate ratio rational raw react readily realistic realm rear reasonable rebel recall receipt receiver recently recession reckon recognition recommend recorder recover recovery recreation recruit reduction reference refine reflect reform refresh refugee refusal regarding regardless region register regulate regulation reinforce reject relate relativity relax release relevant reliable relief religion reluctant rely remain remark remarkable remedy remote removal render renew rent repeatedly repetition replace reporter represent representative reproduce republican reputation rescue resemble reservation reserve reservoir residence resident resign resist resolution resolve resort resource respectively respond responsibility responsible restore restrain restraint resume retail retain retire retreat reveal revenue reverse revolt revolution revolutionary rhythm rib rid ridge ridiculous rifle rigid riot ripe risk rival roar roast rob robe robot robust rocket rod roller romantic rope rotate rotten rough route routine royal rude rug rumor rural rust sack sacred sacrifice saddle sail saint sake salary sake satellite satisfaction sauce saucer sausage saving scale scan scandal scarce scare scatter scenery schedule scheme scholar scholarship scissors scope scout scrape scratch screen screw seal secondary secretary section sector secure seed seek seize selection semester semiconductor seminar senate senator sensible sensitive sentence sequence session setting settle severe sew shade shallow shame shampoo shape share sharpen shave shed sheer sheet shelf shell shelter shield shift shine shipment shiver shock shortage shortcoming shortly shot shrink shrug shut sideways sightseeing signal signature significance significant silicon similarly sin sincere singular sink site skeleton sketch ski skilled skillful skim slam sleeve slender slice slide slight slim slip slippery slogan slope smash snap soak soar sob soccer social sociology soda software solar sole solemn solid solution somehow sometime somewhat sophisticated sore sorrow sort soul soup sour source sow spacecraft spade span spare spark specialist specialize species specific specify specimen spectacular speculate spell sphere spider spill spin spiritual spit spite splendid split spoil spokesman sponsor spot spray spur squeeze stability stable stack stadium staff stain stake stale stand standpoint stare starve statement static statistic statue status steady steak steamer steel steep steer stem sticky stiff stimulate sting stir stock stocking stoop storage stove strain strap strategic straw stream strengthen stretch striking string strip stripe stroke structure studio stuff style subject submit subsequent substance substantial substitute subtract suburb subway succession suck sufficient suggestion suicide sum summarize summit superb superficial superior supermarket supplement supreme surface surgery surplus surrender surrounding survey survival survive suspect suspend suspicion sustain swallow sway swear sweat sweater sweep swell swift swing switch sword symbol sympathetic sympathy symptom synthetic systematic tackle tag talent tame tank tap target tax technician tedious teenager telescope temper temple temporary temptation tend tender tense tension terminal territory terror textile theme theoretical therapy thereby thermometer thirst thorough thoughtful threat thrive throat thrust thumb thunder tide timber tissue title toast tolerance tone topic torch torture tough towel trace tractor trail trait traitor transaction transfer transform translation transmission transmit transparent transplant transport trap trash tray treasure treatment treaty tremble tremendous trend trial triangle tribe trick trim triumph troop tropical troublesome trumpet trunk tube tune tunnel tutor twin twist typewriter typical typist tyre ultimate umbrella undergo undergraduate underground underline underneath understanding undertake undo undoubtedly uneasy unexpected unfortunately uniform union unique unity universal universe unlike unload unusual upper upright upset up-to-date urban urge urgent usage utility utilize utmost utter vacant vacuum vague vain valid vanish vapor variable variation vast vehicle venture verify version vessel veteran via vibrate vice victim vigorous vinegar violate violence violent violet virtual virtue visible vision vital vitamin vivid vocabulary volcano voluntary volunteer vote voyage wagon waist wander ward warmth warrant waterproof wax weaken weapon weary weave weed weekly weep weld welfare whale whatsoever wheat wheel whereas whip whisper whistle whoever wholly wicked widen widow width wisdom wit withdraw withstand witness wolf wool workshop worship worthwhile worthy wound wrap wreck wrist writing yawn yield youngster zone'},
+    cet6: { name: '大学六级', words: 'abbreviation abide abnormal abolish abound abreast abrupt abstain absurd abundance accessory acclaim accommodate accomplice accountability accountable ace acoustic acquit activate activist acute addict adept adhere adjacent adjourn adjudicate adobe adolescent advent adversary adverse aerial aesthetic affiliate affirm afflict aftermath aggregate aggression agile agony aide ailment akin alas albeit album algebra alien align allege allegiance allergen alley allocate allot allowance alloy allude allure almighty aloft alpine altar alteration alternate altitude alumni amateur ambassador amber ambiguity ambiguous ambitious ambulance amend ammunition ample amplify analog analogy analytical ancestor ancestry angel anguish animate animated annex annotate annual anthology antibiotic anticipate antidote antique antonym anxiety apparatus apparel appease appendix applaud appliance applicable applicant appraisal apprehend apprentice apt arbitrary arc archive ardent arena arithmetic armor array arrogant articulate artillery ascend ascertain ascribe ash ashore aspire aspirin assassin assault assemble assert assess asset assign assimilate assumption asteroid asylum athlete atlas atom attach attendance attendant attic attorney auction audio audit authentic authorize autobiography automate autopsy avenue aviation awe awesome axis bachelor backbone backdrop backup badge baffle bail bait bakery balcony ballot bamboo ban bandit banish bankrupt banner banquet baptism barbaric bare barely bark barn baron barrel barren barricade barter base bash basic basin basis batch batter battle bay bead beak beam beast benchmark bend beneath beneficial berry besiege bestow beverage bibliography bilateral bill bind binder binoculars biopsy birch bishop bitterness bizarre blackout blade blame bland blank blast bleach blend bless blind blink blister bloc blockade bloom blossom blot blueprint bluff blunder blunt blur blush boast bodily bold bolster bolt bomb bond bonus booklet boom boost booth border bore botanical bounce bound bout bow bowel boycott brace bracket brag brake brand brass breach breadth breakthrough breathtaking breed brew bribe brick bride brief bright brilliant brink brisk brittle broadcast brochure bronze brood brow browse bruise brutal bubble buck bud buffer bugle bulb bulk bull bulletin bump bunch bundle bunk buoy burden bureaucracy burglar burial burn burst bustle butcher butterfly bypass byproduct cab cabin cabinet cable cage calcium calendar calf caliber calligraphy calorie camouflage canal cancel cane cannibal cannon canvas canyon capability cape capital captain caption captive capture carbon carcass cardboard cardinal cargo carnival carol carpet carriage carrot cart carve cascade cash cassette cast casual catalog catastrophe category cater cathedral cattle caution cautious cavalry cavern cavity cease cedar celebrity cell cellar cement cemetery census ceramic cereal ceremony certify chain chair challenge chamber champagne champion chancellery chant chaos chapel chapter character charcoal charge charity charm chart charter chase chat cheat check cheer cherish chess chew chief chill chin chip choir choke cholesterol chop chord chore chronic chunk church cigar circuit circular circulate circus cite citizenship civic civil civilian civilization clad claim clamp clan clap clarify clash clasp classify clause clay clearance clearing clergy clerical click client cliff climax cling clinic clip cloak clockwise clot clown club clue cluster clutch clutter coal coalition coarse coast coaster cocaine cockpit cocktail coconut code cognitive coil coin coincide coke cola collapse collar colleague collective collide collision colonel colonial colony column combat combine comedy comet comic command commemorate commence commend commentary commission commit commodity commonplace commonwealth communal compact companion comparable comparative compass compatible compel compensate competence compile complex component compose composite compound comprehension comprehensive comprise compulsory conceal concede conceive concentrate conception concerning concession concise conclude concrete condemn condense conducive conduct conference confession confine confirm conflict conform confront confusion congregation conjunction conscience conscientious conscious consecutive consensus consent consequence conserve considerable considerate consistent console consolidate conspicuous conspiracy constant constitute constraint consul consult consume contact contagious contain contaminate contemplate contemporary contempt contend content contest context contingent continual continuity contradict contrary contrast contribute contrive controversial convene convenience convention converge convert conviction convince cook cookery cooperate coordinate cope copper copyright coral cord core cork corn cornerstone corporal corporate correspond corridor corrupt cosmos costume cottage couch council counsel counter counterpart countless coupon courage courtesy coverage coward cozy crack cradle craft cramp crane crash crawl creative credible creek creep critique crocodile crooked crop cross crucial crude cruel cruise crumble crush crust crystal cube cucumber cue cultivate culture cumulative cunning cupboard curb curiosity curl currency current curriculum curry curse cushion custody custom customary cute cutting cycle cylinder cynical dairy dam damage damn damp dare darling dash data database dawn dazzle deadline deadly deaf dean debris debut decay deceive decent deck declaration decorate decree dedicate deduce deem default defect defend defiance deficiency deficit defy degrade delegate deliberate delicate deliver delta demand democracy demonstrate denial denounce dense dental deny depart depict deplete deploy deposit depress deprive deputy derive descend designate desire desk desktop despair despise destination destiny destroy detector deteriorate determine devastating devise devote diagnose dialect diamond dictation diesel dietary digest digit dignity dilemma dilute dimension diminish dine dip diplomat directory disarm discard discharge disciple discipline disclose discomfort discord discount discourse discreet discrepancy discretion discrimination disdain disgrace disguise disgust dish dismal dismay dispatch disperse displace display disposal dispose dispute disregard disrupt dissolve distant distill distinct distort distract distress distribute disturbance ditch dive diverge diverse dividend divine dock doctrine document dodge domain dome domestic donate donkey donor doom dormant dose dot doubt drain drama drastic draught drawback dread drift drought drown drum dual dub dubious due duke dull dumb dump duplicate durable dusk dust dwarf dwell dye dynamic dynasty eager eagle ear earnest earthquake ease echo eclipse ecology economic edible edit ego eject elaborate elastic elbow elder electoral elegant elevate elicit eligible elite eloquent embargo embark embassy embed embody embrace emerge emergency emigrate eminent emit emperor empire empirical empower enable enact enchant enclose encounter encyclopedia endow endure energetic enforce engage engine enhance enlighten enormous enrich enroll ensemble ensure entail enterprise entertain enthusiastic entitle entity entrepreneur entry envelope environment envy epidemic episode equality equate equip equivalent era erase erect erosion err escort essential establish estate esteem estimate eternal ethic evacuate evade evaluate evaporate evident evil evoke evolution evolve exaggerate exasperate excavate exceed excel excerpt excessive exclude exclusive excursion execute exempt exert exhaust exhibit exile exist exit exotic expand expedition expenditure expertise expire explicit exploit explore export expose exquisite extension extent exterior extinct extinguish extract extraordinary extravagant extreme fabric fabulous facet facilitate facility factor factual faculty fade failure faithful fake fame famine fantasy farewell fascinate fate fatigue fault feasible feast feat feedback fellowship feminine fence ferry fertile fetch feudal fever fiber fiction fidelity fierce filter finance finite fireplace fiscal fisherman fitting fixture flake flame flap flare flash flat flatter flavor flaw flee fleet flesh flexible flicker fling float flock flood flourish fluctuate fluent fluid flush flutter focus foil folk fondle forbidden forecast forefront forge forgive format formidable formula forthcoming fort forthright fortress fossil foster foul fracture fragile fragment fragrance frail frame frank frantic fraud freely freight frequency friction frighten fringe frontier frost frown fruitful frustrate fulfill fume functional fundamental funeral furious furnace fury fuse fuss futile gadget galaxy gallery gallon gamble gang garage garbage garlic garment gasp gauge gaze gear gene generalize generous genetic genius genre gentle genuine geology gesture ghost giant gigantic giggle gin glacier glamor glance gland glare glass glaze gleam glide glimmer glimpse glitter globe gloom glorious glory glossary glove glow glue goodness gorgeous gossip govern gown grab grace gracious gradual grain gram grandeur grasp grateful grave gravity graze greed greenhouse grief grill grim grind grip groan grocer groom gross grove grudge guarantee guardian guerrilla guidance guild guilty guise guitar gulf gulp gum gust gutter guy gym habitat hail halt ham handicap handle handy harassment harbor hardware hardy harm harmony harness harsh haste hatch hatred haul haunt haven hazard haze headline heal heap hearse heart hearth heater hectare hedge heel heir helicopter hell helmet helpless hemisphere hence herald herb heritage hero hesitate hierarchy highlight hijack hike hinder hinge hint hinterland hip historian historic hitch hitherto hive hobby hoist hollow holy homeland homicide honest hook horizon hormone horn horrible horror horse hose hospitality hostage hostile hound household hover hub hug humanity humble humidity humor hurl hurricane hut hydraulic hydrogen hygiene hypothesis hysterical icon ideal identical identification ideology idiot idle ignite ignorance illusion illustrate imaginative imitate immense immerse immune impact impair impartial impatient imperial implement implication impose impulse inaugurate incentive incidence incline inclusive incorporate incredible incur indefinite index indicate indict indifference indigenous indignation indispensable individual indoor induce indulge industrial inertia infant infect infer inferior infinite inflation inflict informal infrastructure ingenious inhabit inherit inhibit initial inject inland inlet inmate innocent innovation input inquire insane insect insert insistent inspect inspiration install installment instinct institute instruct instrument insulate intake integrate intellect intelligent intense intensive intent interact intercourse interior intermediate internal interpret interrogation interval intervene intimate intimidate intricate intrinsic intrude intuition invalid invaluable invariably invasion inventory invert invest investigate invincible invisible invoice involve ion ironic irony irrespective irrigate irritate isolate issue ivory jacket jail jam jar jaw jazz jealous jet jewel jog joint joke jolly journal journalism judicial juggle juice junction jungle junior junk jurisdiction jury justice justify juvenile keen keeper kettle keyboard kidnap kidney kin kindergarten kit knight knit knob knot label laboratory lace ladder lag lamb lame lament landscape lane lantern lap lapse laser latent latter launch laundry lavish lawn lawsuit layer layman layout leaflet league leak leap lease legacy legal legend legislate legitimate leisure lens lessen lever levy liability liberal liberty lick lid lieutenant limb limitation linger linguistic link lip liquor literacy literal literary literature litter liver livestock lobby locality locate locker lodge log logic logo long longitude loom loop loot lord lottery lounge loyal lubricant lumber lump lunar lung lure lust luxury machinery magistrate magnet magnitude maiden mainland maintenance majestic male malice mammal manage maneuver manifest manipulate manner mansion manual manufacture manure manuscript marathon marble margin marine marital marked marsh martyr marvel masculine mask massacre massive maternal mathematics mature maximum maze meadow mechanical mechanism medal medieval meditation melody membership memo memorial menace mentality merchandise mercury mercy mere merge merit mesh metallic metaphor metric metropolitan microbe microphone microwave midst mighty migrate mild militant million mingle miniature minimize ministry minor minus miracle misc mischief miserable misfortune mislead missile missionary mist mistress moan mob mobile mock mode modify module moist molecule momentous momentum monarch monetary monopoly monotonous monster morality moreover mortal mortgage mosaic mosquito motel motion motivate motor mount mourn mouthful muddle mug multiple multitude municipal murmur muscular mushroom mute mutter mutual mystery myth naive nap narrate narrative nasty nationality naval navigate neat necessarily negotiate nerve neutral neutron nickel nightmare nitrogen noble nominate nonetheless nonsense norm notable notion notorious notwithstanding nourish novelty nucleus nuisance nurture nutrient nutrition oath obedience obese objection oblige obscure observe obsession obstacle obstinate obstruct obtain occasional occupation odd offend offensive offset olive opaque opera operational opium opponent opportunistic oppose optimal optimistic option oral orbit orchestra orderly ore organic orient original ornament orthodox outbreak outfit outlaw outlet outline outlook outrage outright outset oval oven overall overcoat overcome overdue overflow overhear overlap overlook overnight override overt overthrow overwhelm overwhelming owing owl oxide oxygen ozone pace pacific package pad paddle painstaking palm panel panic panorama pant paperback parade paradise paradox paragraph parallel paralyze parameter parasite parcel parliament partial participant particle particularly partition passport patent pathetic patriot patron pavement pawn peak peanut pearl peasant peculiar pedal pedestrian peel peer peg penalty pendulum peninsula pension pepper perceive perception peril perimeter periodic perish permanent permeate perpetual perplex persecute persevere persist personality personnel perspective persuasion pessimistic pest pesticide petition petroleum petty phenomenon philosopher philosophy phrase physical physiology pierce pigeon pillar pillow pilot pinch pine pink pirate pistol piston pit pitch plague plaintiff plausible plea plead pledge plentiful plight plot plow plug plumber plunge plural poetry poise poke polar pole polish poll pond ponder pool pope porcelain porch pore portfolio portray pose positive possess postal poster postulate pottery poultry pour poverty powder practitioner preach precaution precede precise predator predecessor predictable predominant preface pregnant prejudice preliminary premier premium prescribe preservation preside prestige presumably presume pretext prevail prey primitive principal prior priority privacy probe proceed proclaim proficiency profile profound progressive prohibit project prolong prominent promise promote prompt prone proof propagate propel property prophet proportion proposal prose prosecute prospective prosper protagonist protective protein protest prototype provided province provisional provoke psychiatry psychological pump punch punctual punctuation puppet purchase purify purple purpose pursue puzzle qualification qualitative quantity quart queen quest questionnaire queue quilt quit quota quotation racial radar radiant radical radioactive radius rage raid rainbow rally ramble ranch random rank rape rash ratify ratio rational rattle raw readily realistic realm reap rear rebel rebellion recall recede receipt recession recipe recipient reckless reckon reclaim reconcile recreation recruit rectangle rectify recur recycle referee reference refine reflect reform refrain refresh refugee refund refusal regime register regulate rehearsal reign rein reinforce reject rejoice relay reliable reliance relief religion relinquish remedy remnant renaissance render renew renowned repay repel repent repertoire replacement reproach reproduce reptile republican reputation rescue resemble resentment reserve reside resign resistant resolution resolve resonance resort respective restoration restrain restrict retail retain retaliate retard retention retort retreat retrieve retrospect reunion reveal revelation revenge revenue revere reverse revise revive revolt revolve rhetoric rhythm rib ribbon ridicule rifle rigid rigorous riot rip rival roam robe robust rocket rod role romance rooster root rope rotate rotten rouse route routine royalty rude rugged rumor rupture rural rust ruthless sack sacred saddle safeguard saint sake salon salvation sanction sane sarcastic satire satisfaction sauce savage scale scandal scar scarce scare scarf scatter scenario scenery schedule scheme scholarly scissors scold scope scorn scout scramble scrap scratch screen screw script scrutiny sculpture seal seam seaport secondary sector secular seduce segment segregate seize seminar senator sensation sensible sensitive sentiment sequence sergeant serial sermon session setback severe sew sexual shack shade shaft shallow sham shame shampoo shatter shave shed sheer shell shelter shepherd shield shift shimmer shiver shock shoot shortage shorthand shove shovel shred shrewd shrimp shrine shrink shrub shrug shudder shuffle shun shutter shuttle sideways siege sigh signature significant signify silicon simulate simultaneous sin singular sip siren situate skeleton skeptical sketch ski skim skip skull skyscraper slack slam slander slash slate slaughter slave sleeve slender slice slick slide slim slip slippery slit slogan slope slot slum slump smack smart smash smear smug snap snatch sneak sneer sniff snob snore soak soar sober soccer sociable sociology socket sodium sole solicitor solid solution solvent somehow sophisticated sore sorrow soul soup sour source souvenir sovereign sow spacecraft span spare spark spatial spear specialist species specify specimen spectacle speculate sphere spice spider spike spill spin spine spiral spiritual splash splendid split spoil spokesman sponge sponsor spontaneity spontaneous spoon spot spouse spray spring spur squad squeeze stability stack stadium staff stagger stain staircase stake stale stalk stall stammer stance standard staple startle statement static statistics statue status statute steadfast steak stealth steep steer stellar step stereotype stern stew sticky stiff stimulate sting stipulate stir stitch stock stoop storage stout stove strain strait strand strategy straw stray streak streamline strengthen strenuous stress stretch stride strife strike striking string strip stripe strive stroke stroll structural stubborn studio stuff stumble stump stun sturdy style subconscious submerge submit subordinate subscribe subsequent subsidiary subsidy substance substantial substitute subtle subtract suburb subway succession sue sufficient suggestion suicide suite sulfur sum summit summon superb superficial superintendent superior supersonic superstition supervise suppress supreme surge surgeon surpass surplus surrender survey susceptible suspect suspend suspicion sustain swallow swamp swap swarm sway swear sweater sweep swell swift swing switch sword symbol symmetry sympathetic symphony symptom syndrome synonym synthetic systematic tablet tackle tact tactical tag talent tame tan tank tap tariff tease technician tedious teenager telegram telegraph telescope temperament tempo tempt tenant tendency tender tension terminal terrace terrain terrify territory textile texture thank thanksgiving theatrical theme theoretical therapy thereby thermal thirst thorn thorough threshold thrift thrill thrive throat throne throng thrust thumb thunder tick tide tile tilt timber timely timid tissue title toast token tolerance toll tone torment tornado torrent torture toss tournament tow towel toxic trace track tractor traffic tragic trail trait traitor tramp trample tranquil transcend transcript transfer transform transit transition transparent transplant transport trap trash tray tread treason treasure treaty trek tremendous trench trend trial tribe tribute trifle trigger trillion trim triple triumph trivial troll trophy tropic trouble trumpet trunk trustee tuition tumble tune tunnel turbulent turmoil turnover tutor twilight twinkle twist typewriter typical tyrant ultimate ultrasonic ultraviolet unanimous undergo undergraduate underlying undermine underneath undertake undo uneasy unfold unfortunately uniform union unique universal unload update upgrade uphold upright urban urge usage utensil utility utilize utmost utter vacant vacuum vague vain valid valve ventilate venture verbal verify verse version vessel veteran via vibrate vicious victim vigor violate violent virgin virtual virtue virus viscous vision vital vivid vocabulary vocal vocational voluntary volunteer vomit vulgar vulnerable wage wagon wander ward wardrobe warehouse warfare warrant warrior wary wasteful waterfall wavelength waver wax weary weave wedge weed weld welfare whatsoever whereby whip whirl whisky whisper whistle wholesale wholesome wholly wicked widen widow width wilderness willow wit witch withdraw wither witness witty wizard wonder wool workshop worship worthwhile worthy wound wrap wreck wrench wretched wrinkle wrist yank yarn yawn yearly yell yield youngster zeal zigzag zinc zone'},
+    ielts: { name: '雅思', words: 'abandon abstract academy access accommodate accompany accomplish accumulation accurate achieve acknowledge acquire adapt adequate adjust administration admire admission adopt adult advance advantage adventure advertise advocate affair affect afford agency aggressive agriculture allocate alternative ambition analysis ancestor ancient annual anxiety apparent appetite appliance application appreciate approach appropriate approval approximately architecture argument arrange artificial assessment assignment associate assumption atmosphere attach attain attempt attend attitude attract audience authority automatic available awareness awkward bacteria balance barrier basically battle behalf behave behavior beneficial beyond biology budget burden business calculate campaign capable capacity capture carbon career category celebrate ceremony challenge champion character charity chemical circumstance civil claim clarify classic climate clinical collapse colleague collection colonial combine comedy comfort commander comment commerce commission commit communicate community companion company comparison compensation compete competitive complex component concentrate concept concern conclude concrete conduct conference confidence confirm conflict confront conscious consequence conservation conservative considerable consistent constant construction consumer consumption contact contemporary content contest continue contract contrary contrast contribute contribution convert convince cooperate coordinate core corporate correspond council counselor counter country countryside courage creative crime crisis criterion criticism crucial cultural culture curious currency current curriculum customer damage debate decade decline defend deficit define definition demonstrate deny department depict deposit depression derive describe design despite destination determine develop device devote dimension diminish dinner discipline discount discover discriminate disorder display dispose dispute distinct distribution diverse document domestic dominant dominate draft drama dramatic dynamic ecology economic edition educator effective efficiency eliminate elsewhere emerge emphasis empire employ employee enable encounter encourage energy engage enormous ensure enterprise entertainment enthusiasm entire environment equal equipment essential establish estate estimate evaluate eventually evidence evolution evolve examine exceed exception excess exchange excitement exclude executive exercise exhibit existence expansion expect expenditure experiment expert exploit explore export exposure extend extent external extract extraordinary extreme facility factor fail failure fairly federal finance finding focus foreign formal formation formula fortunately foundation founder framework freedom frequency frontier function fundamental furthermore gender generally generation global guarantee guidance handle hence highlight historian household housing identify illegal illustrate image imagine immigration impact implication import impose impressive incident income increasingly indicate individual industrial infection inflation influence injure initially innovation inquiry insistence inspection instance institute instrument insurance integrate intellectual intelligent intense interaction internal interpret intervention invest investigator investment involve isolate issue journal judgement judicial justice justify kingdom label laboratory landscape largely launch lawyer leadership league leather lecture legal legislation liberal likelihood linguistic literary literature loan lobby logical lung machinery magnetic maintain major manage management manipulate manufacture margin massive material mechanism medium mental merely migration military minimal minimum ministry minor mission mode modification monitor mood moral moreover mostly motion motivation movement multiple municipal murder mutual namely negotiate nervous network nevertheless nuclear numerous nutrition objective obtain obvious occupation occur offence official ongoing operational opponent opportunity opposition option orbit organize original outcome outlook output overall overcome overseas overview ownership oxygen panel paradigm paragraph parallel participant passage passive perceive percent perception performance permanent permission persist personality perspective phenomenon philosophical physical planet pleasure plus poetry police policy pollution popular population portion portrait positive possession potential poverty practically predict preparation prescribe presence preserve pressure previously primary principle priority prisoner procedure proceed process professional profit prohibit project prominent promise promote prompt proportion proposal prospect protection protein provision psychological publication publisher purchase pursue qualification qualitative radical randomly range rapid rarely ratio readily realistic reasonably receiver recession recognition recovery reduction reference reflect reform regime region register regulate reinforce reject relate release relevant relief religion reluctant rely remain remark remedy remote removal repeatedly represent reproduce reputation request require reservation resident resolution resolve resort resource respectively respond restoration restore restrict retain reveal revenue reverse review revolution rhythm rival route rural sample sanction scale scandal scarcely scholar scientific scope sculpture secondary section sector security selection senator sensible sequence series severely sexual shelter shift signal significant similarly situate skilled slavery slightly social solely somewhere somewhat source specialist species sphere spiritual spokesman stability statue status steadily stimulus stock storage strategy strengthen stress structure struggle submission substitute sufficient sum summary supplement supply supporter suppose surely surface surgery surplus survey survival suspect suspend sustain symbol sympathy target technical technique technological tension territory theme theology theoretical therapy thereby threaten tolerance tough tourism track tradition transfer transform transition transport treaty trend trigger troop tropical ultimately undergo undertake undoubtedly uniform unique universal unlikely urban valid variation variety vehicle version victim violence virtually visible vision visual vital volume voluntary vulnerable weapon welfare whereas widespread willing withdraw witness wonder worldwide worthy yield zone'},
+    toefl: { name: '托福', words: 'abandon absent absorb abstract abundant academy accelerate access accommodate accompany accomplish accounting accumulate accurate achieve acknowledge acquire adapt adequate adjust administration admire adolescent adopt advance advantage advent adverse advertise advocate aesthetic affect afford aggregate agriculture allocate alternative amateur ambitious analysis ancestor ancient annual antagonistic anticipate anxiety apparatus apparent appeal application appreciate approach appropriate approximately arbitrary architecture arise arrange article artificial aspect aspiration assemble assess assign associate assume atmosphere attach attain attempt attend attitude attract attribute audience authority automatic availability awareness awkward bacteria barrier basically behalf behave behavior beneficial bias billion biodiversity biology bond boundary budget capable capital capture career category cellular challenge channel chapter characterize chemical circumstance citizen civil clarify classic classification clinical coalition collapse colleague collective colonial combination commodity common communicate community companion comparable comparative compensate competition compile complex component compose comprehensive comprise conceive concentrate concept concern conclude conduct conference confidence confirm conflict conform confront congress conscious consequence conservation conservative considerable consistent constant constitute construct consult consume contact contemporary content context contract contrary contrast contribute controversial controversy convention convert convince cooperate coordinate core corporate correspond council counsel counter create creative criterion critical crucial cultural culture currency curriculum debate decade decline defend deficit define definition democracy demonstrate denote deny depict deposit depression derive design despite destination destruction determine develop device devote dimension diminish discipline discourse discrimination display dispose disproportionate dispute distinct distort distribute diverse document domestic dominant dominate draft drama dramatic dynamic earthquake ecology economic ecosystem edition eliminate emergence emission emphasis empirical enable encounter energy enforce engage enhance enormous ensure enterprise entertainment entirely entry environment equal equation equipment equivalent erosion establish estate estimate evaluate eventually evidence evolution evolve examine exceed exception exchange exclusion exclusive exhibit expansion experiment explicit exploit explore export exposure extend extent external extract extreme facilitate factor faculty fade fail fairly feasibility federal fiction finance finite flexibility focus foreign formal formula fossil founder framework frequency frontier fuel function fund fundamental further furthermore gender generally generate global goal grant guarantee guideline hence highlight household hypothesis identify illustrate image immigration impact implement implication imply import impose incentive incident income increasingly indigenous individual induce industrial inequality inevitable infant infection inflation influence inhibit initial innovation inquiry insight inspection instance institute instrument integrate intellectual intelligent intense interact intermediate internal interpret intervention invest investigate investment investigator involve isolate issue journal justify label landscape largely launch layer leadership lecture legacy legal legislation liberal likelihood likewise linguistic literary literature logic longitudinal magnetic maintain major manipulate manufacture margin massive material mathematics mechanism medium mental merely migration military minimal minimum minor mode modify monitor mood moral moreover motivation movement multiple municipal mutual myth namely negotiate network neutral nevertheless nuclear numerous nutrition objective obtain obvious occupy occur odd ongoing operational opponent opportunity opposition option orbit organ organization orientation original outcome output overall overcome overlap overseas overview ownership oxygen paradigm parallel participant particularly passage passive perception performance period permanent permit persist personality perspective phenomenon philosophical physician planet pleasure policy pollution popular portion portrait pose positive possession potential practically practitioner precede predict predominant preference preliminary prescribe presence preserve pressure previously primary principal principle priority procedure proceed process professional prohibit project prominent promote proportion prospect protein provision psychological publication publisher purchase pursue qualitative radical random range rapid ratio readily realistic realm receiver recession recovery reduction regime region register regulate reinforce reject relate release relevant relief reluctant rely remain remark remedy remote removal renaissance repeatedly reproduce reputation request require reservation resolution resolve resource respectively respond restoration restore restrict retain reveal revenue reverse review revolution rhythm rigid role rural sample sanction scale scandal scarcely scenario scholar scientific scope sculpture secondary section security selection sequence sex severe sexual shelter shift signal significance situate skeleton skilled slavery slightly social sole somewhat source specialist species spectrum sphere spiritual stability statistics status steadily stimulus storage strategy strengthen stress structural struggle subjective submit subsequent subsidy substitute sufficient suit sum summary supplement support supposedly supreme surgery surplus survey survival suspect suspend sustain symbol systematic target technical technique technological temporary tension territory theme theology theoretical therapy thereby threaten tolerance tough trace track tradition transfer transform transition transmission transport trend trigger tropical ultimately undergo undermine undertake undoubtedly uniform unique universal unlike unlikely urban utility valid variable variation variety vehicle version victim virtually visible vision visual vital volume voluntary vulnerable whereas widespread willing withdraw witness worldwide worthy yield zone'}
+  },
+
+  buildWordLists() {
+    const lib = this.wordBank[this.selectedLibrary];
+    const raw = lib.words;
+    const allWords = Array.isArray(raw) ? raw : raw.split(' ').filter(Boolean);
+    // group by length
+    const byLen = {};
+    allWords.forEach(w => {
+      const len = w.length;
+      if (!byLen[len]) byLen[len] = [];
+      if (!byLen[len].includes(w)) byLen[len].push(w);
+    });
+    // assign to levels: 1→3, 2→4, 3→5, 4→6, 5→7+
+    const mapping = { 1: 3, 2: 4, 3: 5, 4: 6, 5: 7 };
+    this.words = {};
+    for (let lv = 1; lv <= 5; lv++) {
+      const targetLen = mapping[lv];
+      let pool = [];
+      if (lv < 5) {
+        pool = byLen[targetLen] || [];
+        if (pool.length < 10) {
+          for (let dl = 1; dl <= 3; dl++) {
+            const shorter = byLen[targetLen - dl] || [];
+            const longer = byLen[targetLen + dl] || [];
+            pool = pool.concat(shorter.filter(w => !pool.includes(w)));
+            pool = pool.concat(longer.filter(w => !pool.includes(w)));
+          }
+        }
+      } else {
+        // level 5: 7+ letters
+        for (let len = 7; len <= 14; len++) {
+          pool = pool.concat(byLen[len] || []);
+        }
+      }
+      this.words[lv] = pool.length > 0 ? pool : allWords.slice(0, 20);
+    }
+  },
+
+  selectLibrary(lib) {
+    this.selectedLibrary = lib;
+    this.buildWordLists();
+  },
+
+  // ─── Dictionary: phonetic + Chinese ────────────
+  wordDict: {
+    'cat':{p:'/kæt/',c:'猫'},'dog':{p:'/dɔːɡ/',c:'狗'},'sun':{p:'/sʌn/',c:'太阳'},'hat':{p:'/hæt/',c:'帽子'},'red':{p:'/red/',c:'红色'},'big':{p:'/bɪɡ/',c:'大的'},'run':{p:'/rʌn/',c:'跑'},'sit':{p:'/sɪt/',c:'坐'},'hot':{p:'/hɒt/',c:'热的'},'cup':{p:'/kʌp/',c:'杯子'},'bed':{p:'/bed/',c:'床'},'fun':{p:'/fʌn/',c:'有趣的'},'pig':{p:'/pɪɡ/',c:'猪'},'map':{p:'/mæp/',c:'地图'},'bus':{p:'/bʌs/',c:'公共汽车'},'net':{p:'/net/',c:'网'},'fox':{p:'/fɒks/',c:'狐狸'},'jam':{p:'/dʒæm/',c:'果酱'},'key':{p:'/kiː/',c:'钥匙'},'log':{p:'/lɒɡ/',c:'木头'},'pen':{p:'/pen/',c:'笔'},'bug':{p:'/bʌɡ/',c:'虫子'},'lip':{p:'/lɪp/',c:'嘴唇'},'mud':{p:'/mʌd/',c:'泥'},'nut':{p:'/nʌt/',c:'坚果'},'pop':{p:'/pɒp/',c:'流行'},'bag':{p:'/bæɡ/',c:'包'},'top':{p:'/tɒp/',c:'顶部'},'box':{p:'/bɒks/',c:'盒子'},'cow':{p:'/kaʊ/',c:'奶牛'},'day':{p:'/deɪ/',c:'天'},'ear':{p:'/ɪə/',c:'耳朵'},'egg':{p:'/eɡ/',c:'鸡蛋'},'eye':{p:'/aɪ/',c:'眼睛'},'fan':{p:'/fæn/',c:'扇子'},'fly':{p:'/flaɪ/',c:'飞'},'gun':{p:'/ɡʌn/',c:'枪'},'ham':{p:'/hæm/',c:'火腿'},'ice':{p:'/aɪs/',c:'冰'},'jar':{p:'/dʒɑː/',c:'罐子'},'kid':{p:'/kɪd/',c:'小孩'},'leg':{p:'/leɡ/',c:'腿'},'man':{p:'/mæn/',c:'男人'},'owl':{p:'/aʊl/',c:'猫头鹰'},'pie':{p:'/paɪ/',c:'馅饼'},'pot':{p:'/pɒt/',c:'锅'},'rat':{p:'/ræt/',c:'老鼠'},'saw':{p:'/sɔː/',c:'锯'},'sky':{p:'/skaɪ/',c:'天空'},'toy':{p:'/tɔɪ/',c:'玩具'},'van':{p:'/væn/',c:'货车'},'wet':{p:'/wet/',c:'湿的'},'zoo':{p:'/zuː/',c:'动物园'},'arm':{p:'/ɑːm/',c:'手臂'},'bat':{p:'/bæt/',c:'蝙蝠'},'bee':{p:'/biː/',c:'蜜蜂'},'bow':{p:'/bəʊ/',c:'弓'},'bun':{p:'/bʌn/',c:'小面包'},'can':{p:'/kæn/',c:'能'},'dip':{p:'/dɪp/',c:'蘸'},'dot':{p:'/dɒt/',c:'点'},'fin':{p:'/fɪn/',c:'鳍'},'gap':{p:'/ɡæp/',c:'间隙'},'gum':{p:'/ɡʌm/',c:'口香糖'},'hen':{p:'/hen/',c:'母鸡'},'ill':{p:'/ɪl/',c:'生病的'},'job':{p:'/dʒɒb/',c:'工作'},'kit':{p:'/kɪt/',c:'工具包'},'lad':{p:'/læd/',c:'小伙子'},'mad':{p:'/mæd/',c:'生气的'},'nap':{p:'/næp/',c:'小睡'},'odd':{p:'/ɒd/',c:'奇怪的'},'pat':{p:'/pæt/',c:'轻拍'},'rag':{p:'/ræɡ/',c:'抹布'},'sip':{p:'/sɪp/',c:'小口喝'},'tap':{p:'/tæp/',c:'水龙头'},'use':{p:'/juːz/',c:'使用'},'web':{p:'/web/',c:'网'},'yak':{p:'/jæk/',c:'牦牛'},'zip':{p:'/zɪp/',c:'拉链'},'ask':{p:'/ɑːsk/',c:'问'},'act':{p:'/ækt/',c:'行动'},'age':{p:'/eɪdʒ/',c:'年龄'},'aid':{p:'/eɪd/',c:'帮助'},'aim':{p:'/eɪm/',c:'目标'},'air':{p:'/eə/',c:'空气'},'all':{p:'/ɔːl/',c:'全部'},'and':{p:'/ænd/',c:'和'},'ant':{p:'/ænt/',c:'蚂蚁'},'any':{p:'/ˈeni/',c:'任何'},'ape':{p:'/eɪp/',c:'猿'},'are':{p:'/ɑː/',c:'是'},'art':{p:'/ɑːt/',c:'艺术'},'ash':{p:'/æʃ/',c:'灰'},'ate':{p:'/eɪt/',c:'吃了'},'awe':{p:'/ɔː/',c:'敬畏'},'axe':{p:'/æks/',c:'斧头'},'bad':{p:'/bæd/',c:'坏的'},'ban':{p:'/bæn/',c:'禁止'},'bar':{p:'/bɑː/',c:'酒吧'},'bay':{p:'/beɪ/',c:'海湾'},'bet':{p:'/bet/',c:'打赌'},'bib':{p:'/bɪb/',c:'围兜'},'bin':{p:'/bɪn/',c:'垃圾桶'},'bit':{p:'/bɪt/',c:'一点'},'bog':{p:'/bɒɡ/',c:'沼泽'},'bud':{p:'/bʌd/',c:'花蕾'},'but':{p:'/bʌt/',c:'但是'},'buy':{p:'/baɪ/',c:'买'},'cab':{p:'/kæb/',c:'出租车'},'cam':{p:'/kæm/',c:'凸轮'},'cap':{p:'/kæp/',c:'帽子'},'cry':{p:'/kraɪ/',c:'哭'},'cub':{p:'/kʌb/',c:'幼崽'},'cut':{p:'/kʌt/',c:'切'},'dad':{p:'/dæd/',c:'爸爸'},'dam':{p:'/dæm/',c:'水坝'},'den':{p:'/den/',c:'兽穴'},'dew':{p:'/djuː/',c:'露水'},'did':{p:'/dɪd/',c:'做了'},'dig':{p:'/dɪɡ/',c:'挖'},'dim':{p:'/dɪm/',c:'暗淡的'},'dry':{p:'/draɪ/',c:'干的'},'dud':{p:'/dʌd/',c:'废物'},'dug':{p:'/dʌɡ/',c:'挖了'},'dye':{p:'/daɪ/',c:'染料'},'eat':{p:'/iːt/',c:'吃'},'eel':{p:'/iːl/',c:'鳗鱼'},'ego':{p:'/ˈiːɡəʊ/',c:'自我'},'elm':{p:'/elm/',c:'榆树'},'emu':{p:'/ˈiːmjuː/',c:'鸸鹋'},'era':{p:'/ˈɪərə/',c:'时代'},'eve':{p:'/iːv/',c:'前夕'},'ewe':{p:'/juː/',c:'母羊'},'far':{p:'/fɑː/',c:'远的'},'fat':{p:'/fæt/',c:'胖的'},'fax':{p:'/fæks/',c:'传真'},'fed':{p:'/fed/',c:'喂养了'},'fib':{p:'/fɪb/',c:'小谎'},'fig':{p:'/fɪɡ/',c:'无花果'},'fit':{p:'/fɪt/',c:'适合'},'fix':{p:'/fɪks/',c:'修理'},'fob':{p:'/fɒb/',c:'钥匙链'},'foe':{p:'/fəʊ/',c:'敌人'},'fog':{p:'/fɒɡ/',c:'雾'},'fop':{p:'/fɒp/',c:'纨绔子弟'},'for':{p:'/fɔː/',c:'为了'},'fry':{p:'/fraɪ/',c:'油炸'},'fur':{p:'/fɜː/',c:'毛皮'},'gag':{p:'/ɡæɡ/',c:'塞口物'},'gal':{p:'/ɡæl/',c:'女孩'},'gas':{p:'/ɡæs/',c:'气体'},'gel':{p:'/dʒel/',c:'凝胶'},'get':{p:'/ɡet/',c:'得到'},'gig':{p:'/ɡɪɡ/',c:'演出'},'gin':{p:'/dʒɪn/',c:'杜松子酒'},'git':{p:'/ɡɪt/',c:'饭桶'},'gob':{p:'/ɡɒb/',c:'嘴'},'god':{p:'/ɡɒd/',c:'上帝'},'got':{p:'/ɡɒt/',c:'得到了'},'gut':{p:'/ɡʌt/',c:'肠道'},'guy':{p:'/ɡaɪ/',c:'家伙'},'gym':{p:'/dʒɪm/',c:'健身房'},'had':{p:'/hæd/',c:'有(过去式)'},'hag':{p:'/hæɡ/',c:'女巫'},'has':{p:'/hæz/',c:'有'},'hat':{p:'/hæt/',c:'帽子'},'hay':{p:'/heɪ/',c:'干草'},'hem':{p:'/hem/',c:'折边'},'her':{p:'/hɜː/',c:'她的'},'hew':{p:'/hjuː/',c:'砍'},'hex':{p:'/heks/',c:'巫术'},'hid':{p:'/hɪd/',c:'隐藏了'},'him':{p:'/hɪm/',c:'他'},'hip':{p:'/hɪp/',c:'臀部'},'his':{p:'/hɪz/',c:'他的'},'hit':{p:'/hɪt/',c:'打'},'hob':{p:'/hɒb/',c:'炉架'},'hod':{p:'/hɒd/',c:'砖斗'},'hog':{p:'/hɒɡ/',c:'猪'},'hop':{p:'/hɒp/',c:'跳'},'how':{p:'/haʊ/',c:'怎么'},'hub':{p:'/hʌb/',c:'中心'},'hue':{p:'/hjuː/',c:'色调'},'hug':{p:'/hʌɡ/',c:'拥抱'},'huh':{p:'/hʌ/',c:'嗯'},'hum':{p:'/hʌm/',c:'哼'},'hut':{p:'/hʌt/',c:'小屋'},'icy':{p:'/ˈaɪsi/',c:'冰冷的'},'ill':{p:'/ɪl/',c:'生病的'},'imp':{p:'/ɪmp/',c:'小鬼'},'ink':{p:'/ɪŋk/',c:'墨水'},'inn':{p:'/ɪn/',c:'客栈'},'ion':{p:'/ˈaɪən/',c:'离子'},'ire':{p:'/ˈaɪə/',c:'愤怒'},'irk':{p:'/ɜːk/',c:'使恼怒'},'its':{p:'/ɪts/',c:'它的'},'jab':{p:'/dʒæb/',c:'刺'},'jag':{p:'/dʒæɡ/',c:'锯齿'},'jaw':{p:'/dʒɔː/',c:'下巴'},'jay':{p:'/dʒeɪ/',c:'松鸦'},'jet':{p:'/dʒet/',c:'喷气机'},'jib':{p:'/dʒɪb/',c:'船首三角帆'},'jig':{p:'/dʒɪɡ/',c:'夹具'},'jog':{p:'/dʒɒɡ/',c:'慢跑'},'jot':{p:'/dʒɒt/',c:'记下'},'joy':{p:'/dʒɔɪ/',c:'快乐'},'jug':{p:'/dʒʌɡ/',c:'壶'},'jut':{p:'/dʒʌt/',c:'突出'},'keg':{p:'/keɡ/',c:'小桶'},'ken':{p:'/ken/',c:'知识范围'},'kid':{p:'/kɪd/',c:'小孩'},'kin':{p:'/kɪn/',c:'亲戚'},'lab':{p:'/læb/',c:'实验室'},'lag':{p:'/læɡ/',c:'滞后'},'lap':{p:'/læp/',c:'膝部'},'law':{p:'/lɔː/',c:'法律'},'lax':{p:'/læks/',c:'松懈的'},'lay':{p:'/leɪ/',c:'放置'},'lea':{p:'/liː/',c:'草地'},'led':{p:'/led/',c:'领导了'},'let':{p:'/let/',c:'让'},'lid':{p:'/lɪd/',c:'盖子'},'lie':{p:'/laɪ/',c:'躺'},'lit':{p:'/lɪt/',c:'点燃了'},'lob':{p:'/lɒb/',c:'高球'},'lop':{p:'/lɒp/',c:'修剪'},'lot':{p:'/lɒt/',c:'很多'},'low':{p:'/ləʊ/',c:'低的'},'lug':{p:'/lʌɡ/',c:'拖'},'mar':{p:'/mɑː/',c:'毁坏'},'mat':{p:'/mæt/',c:'垫子'},'maw':{p:'/mɔː/',c:'胃'},'may':{p:'/meɪ/',c:'可以'},'men':{p:'/men/',c:'男人们'},'met':{p:'/met/',c:'遇见了'},'mid':{p:'/mɪd/',c:'中间的'},'mix':{p:'/mɪks/',c:'混合'},'mob':{p:'/mɒb/',c:'暴民'},'mod':{p:'/mɒd/',c:'现代派'},'mom':{p:'/mɒm/',c:'妈妈'},'mop':{p:'/mɒp/',c:'拖把'},'mug':{p:'/mʌɡ/',c:'马克杯'},'mum':{p:'/mʌm/',c:'妈妈'},'nab':{p:'/næb/',c:'抓住'},'nag':{p:'/næɡ/',c:'唠叨'},'new':{p:'/njuː/',c:'新的'},'nil':{p:'/nɪl/',c:'零'},'nip':{p:'/nɪp/',c:'捏'},'nit':{p:'/nɪt/',c:'虱卵'},'nob':{p:'/nɒb/',c:'脑袋'},'nod':{p:'/nɒd/',c:'点头'},'nor':{p:'/nɔː/',c:'也不'},'not':{p:'/nɒt/',c:'不'},'now':{p:'/naʊ/',c:'现在'},'nun':{p:'/nʌn/',c:'修女'},'oaf':{p:'/əʊf/',c:'笨蛋'},'oak':{p:'/əʊk/',c:'橡树'},'oar':{p:'/ɔː/',c:'桨'},'oat':{p:'/əʊt/',c:'燕麦'},'off':{p:'/ɒf/',c:'关闭'},'oft':{p:'/ɒft/',c:'经常'},'oil':{p:'/ɔɪl/',c:'油'},'old':{p:'/əʊld/',c:'老的'},'one':{p:'/wʌn/',c:'一'},'opt':{p:'/ɒpt/',c:'选择'},'orb':{p:'/ɔːb/',c:'球体'},'ore':{p:'/ɔː/',c:'矿石'},'our':{p:'/aʊə/',c:'我们的'},'out':{p:'/aʊt/',c:'外面'},'ova':{p:'/ˈəʊvə/',c:'卵子'},'owe':{p:'/əʊ/',c:'欠'},'own':{p:'/əʊn/',c:'自己的'},'pad':{p:'/pæd/',c:'垫子'},'pal':{p:'/pæl/',c:'朋友'},'pan':{p:'/pæn/',c:'平底锅'},'pap':{p:'/pæp/',c:'软食'},'par':{p:'/pɑː/',c:'标准'},'paw':{p:'/pɔː/',c:'爪子'},'pay':{p:'/peɪ/',c:'付款'},'pea':{p:'/piː/',c:'豌豆'},'peg':{p:'/peɡ/',c:'钉子'},'pep':{p:'/pep/',c:'活力'},'per':{p:'/pɜː/',c:'每'},'pet':{p:'/pet/',c:'宠物'},'pew':{p:'/pjuː/',c:'长椅'},'pin':{p:'/pɪn/',c:'别针'},'pip':{p:'/pɪp/',c:'种子'},'pit':{p:'/pɪt/',c:'坑'},'ply':{p:'/plaɪ/',c:'层'},'pod':{p:'/pɒd/',c:'豆荚'},'poi':{p:'/pɔɪ/',c:'毛利菜'},'pox':{p:'/pɒks/',c:'痘'},'pro':{p:'/prəʊ/',c:'职业的'},'pry':{p:'/praɪ/',c:'窥探'},'pub':{p:'/pʌb/',c:'酒吧'},'pug':{p:'/pʌɡ/',c:'哈巴狗'},'pun':{p:'/pʌn/',c:'双关语'},'pup':{p:'/pʌp/',c:'小狗'},'put':{p:'/pʊt/',c:'放'},'ram':{p:'/ræm/',c:'公羊'},'ran':{p:'/ræn/',c:'跑了'},'rap':{p:'/ræp/',c:'说唱'},'raw':{p:'/rɔː/',c:'生的'},'ray':{p:'/reɪ/',c:'光线'},'ref':{p:'/ref/',c:'裁判'},'rep':{p:'/rep/',c:'代表'},'rib':{p:'/rɪb/',c:'肋骨'},'rid':{p:'/rɪd/',c:'摆脱'},'rig':{p:'/rɪɡ/',c:'钻机'},'rim':{p:'/rɪm/',c:'边缘'},'rip':{p:'/rɪp/',c:'撕裂'},'rob':{p:'/rɒb/',c:'抢劫'},'rod':{p:'/rɒd/',c:'杆'},'roe':{p:'/rəʊ/',c:'鱼子'},'rot':{p:'/rɒt/',c:'腐烂'},'row':{p:'/rəʊ/',c:'划船'},'rub':{p:'/rʌb/',c:'擦'},'rug':{p:'/rʌɡ/',c:'地毯'},'rum':{p:'/rʌm/',c:'朗姆酒'},'rut':{p:'/rʌt/',c:'车辙'},'rye':{p:'/raɪ/',c:'黑麦'},'sac':{p:'/sæk/',c:'囊'},'sad':{p:'/sæd/',c:'伤心的'},'sag':{p:'/sæɡ/',c:'下垂'},'sap':{p:'/sæp/',c:'树液'},'sat':{p:'/sæt/',c:'坐了'},'sax':{p:'/sæks/',c:'萨克斯'},'say':{p:'/seɪ/',c:'说'},'sea':{p:'/siː/',c:'海'},'sec':{p:'/sek/',c:'秒'},'see':{p:'/siː/',c:'看见'},'set':{p:'/set/',c:'设置'},'sew':{p:'/səʊ/',c:'缝'},'she':{p:'/ʃiː/',c:'她'},'shy':{p:'/ʃaɪ/',c:'害羞的'},'sin':{p:'/sɪn/',c:'罪'},'sir':{p:'/sɜː/',c:'先生'},'six':{p:'/sɪks/',c:'六'},'ski':{p:'/skiː/',c:'滑雪'},'sly':{p:'/slaɪ/',c:'狡猾的'},'sob':{p:'/sɒb/',c:'啜泣'},'sod':{p:'/sɒd/',c:'草皮'},'son':{p:'/sʌn/',c:'儿子'},'sop':{p:'/sɒp/',c:'浸湿'},'sot':{p:'/sɒt/',c:'酒鬼'},'sow':{p:'/səʊ/',c:'播种'},'soy':{p:'/sɔɪ/',c:'酱油'},'spa':{p:'/spɑː/',c:'温泉'},'spy':{p:'/spaɪ/',c:'间谍'},'sty':{p:'/staɪ/',c:'猪圈'},'sub':{p:'/sʌb/',c:'替补'},'sue':{p:'/suː/',c:'起诉'},'sum':{p:'/sʌm/',c:'总和'},'sup':{p:'/sʌp/',c:'小口喝'},'tab':{p:'/tæb/',c:'标签'},'tad':{p:'/tæd/',c:'少量'},'tag':{p:'/tæɡ/',c:'标签'},'tam':{p:'/tæm/',c:'苏格兰帽'},'tan':{p:'/tæn/',c:'晒黑'},'tar':{p:'/tɑː/',c:'焦油'},'tat':{p:'/tæt/',c:'轻击'},'tax':{p:'/tæks/',c:'税'},'tea':{p:'/tiː/',c:'茶'},'ted':{p:'/ted/',c:'翻晒'},'tee':{p:'/tiː/',c:'球座'},'ten':{p:'/ten/',c:'十'},'the':{p:'/ðə/',c:'这个'},'thy':{p:'/ðaɪ/',c:'你的'},'tic':{p:'/tɪk/',c:'抽搐'},'tie':{p:'/taɪ/',c:'领带'},'tin':{p:'/tɪn/',c:'锡'},'tip':{p:'/tɪp/',c:'小费'},'toe':{p:'/təʊ/',c:'脚趾'},'ton':{p:'/tʌn/',c:'吨'},'too':{p:'/tuː/',c:'也'},'tot':{p:'/tɒt/',c:'小孩'},'tow':{p:'/təʊ/',c:'拖'},'try':{p:'/traɪ/',c:'尝试'},'tub':{p:'/tʌb/',c:'浴盆'},'tug':{p:'/tʌɡ/',c:'拖船'},'tup':{p:'/tʌp/',c:'公羊'},'tut':{p:'/tʌt/',c:'啧啧'},'two':{p:'/tuː/',c:'二'},'urn':{p:'/ɜːn/',c:'瓮'},'van':{p:'/væn/',c:'货车'},'vat':{p:'/væt/',c:'大桶'},'vet':{p:'/vet/',c:'兽医'},'vex':{p:'/veks/',c:'使烦恼'},'via':{p:'/ˈvaɪə/',c:'通过'},'vie':{p:'/vaɪ/',c:'竞争'},'vim':{p:'/vɪm/',c:'活力'},'vow':{p:'/vaʊ/',c:'誓言'},'war':{p:'/wɔː/',c:'战争'},'was':{p:'/wɒz/',c:'是(过去式)'},'wax':{p:'/wæks/',c:'蜡'},'way':{p:'/weɪ/',c:'路'},'wed':{p:'/wed/',c:'结婚'},'who':{p:'/huː/',c:'谁'},'why':{p:'/waɪ/',c:'为什么'},'wig':{p:'/wɪɡ/',c:'假发'},'win':{p:'/wɪn/',c:'赢'},'wit':{p:'/wɪt/',c:'机智'},'woe':{p:'/wəʊ/',c:'悲哀'},'wok':{p:'/wɒk/',c:'炒锅'},'won':{p:'/wʌn/',c:'赢了'},'woo':{p:'/wuː/',c:'求爱'},'wow':{p:'/waʊ/',c:'哇'},'yam':{p:'/jæm/',c:'山药'},'yap':{p:'/jæp/',c:'吠叫'},'yaw':{p:'/jɔː/',c:'偏航'},'yea':{p:'/jeɪ/',c:'是'},'yes':{p:'/jes/',c:'是的'},'yet':{p:'/jet/',c:'还'},'yew':{p:'/juː/',c:'紫杉'},'yin':{p:'/jɪn/',c:'阴'},'you':{p:'/juː/',c:'你'},'zap':{p:'/zæp/',c:'消灭'},'zed':{p:'/zed/',c:'Z字母'},'zig':{p:'/zɪɡ/',c:'之字形'},'book':{p:'/bʊk/',c:'书'},'tree':{p:'/triː/',c:'树'},'fish':{p:'/fɪʃ/',c:'鱼'},'bird':{p:'/bɜːd/',c:'鸟'},'play':{p:'/pleɪ/',c:'玩'},'jump':{p:'/dʒʌmp/',c:'跳'},'blue':{p:'/bluː/',c:'蓝色'},'star':{p:'/stɑː/',c:'星星'},'moon':{p:'/muːn/',c:'月亮'},'cake':{p:'/keɪk/',c:'蛋糕'},'bear':{p:'/beə/',c:'熊'},'duck':{p:'/dʌk/',c:'鸭子'},'frog':{p:'/frɒɡ/',c:'青蛙'},'rain':{p:'/reɪn/',c:'雨'},'snow':{p:'/snəʊ/',c:'雪'},'door':{p:'/dɔː/',c:'门'},'fire':{p:'/ˈfaɪə/',c:'火'},'gold':{p:'/ɡəʊld/',c:'金子'},'ship':{p:'/ʃɪp/',c:'船'},'king':{p:'/kɪŋ/',c:'国王'},'milk':{p:'/mɪlk/',c:'牛奶'},'rose':{p:'/rəʊz/',c:'玫瑰'},'song':{p:'/sɒŋ/',c:'歌曲'},'ball':{p:'/bɔːl/',c:'球'},'hand':{p:'/hænd/',c:'手'},'foot':{p:'/fʊt/',c:'脚'},'head':{p:'/hed/',c:'头'},'nose':{p:'/nəʊz/',c:'鼻子'},'desk':{p:'/desk/',c:'书桌'},'lamp':{p:'/læmp/',c:'灯'},'ring':{p:'/rɪŋ/',c:'戒指'},'swim':{p:'/swɪm/',c:'游泳'},'wind':{p:'/wɪnd/',c:'风'},'warm':{p:'/wɔːm/',c:'温暖的'},'cool':{p:'/kuːl/',c:'凉爽的'},'kind':{p:'/kaɪnd/',c:'善良的'},'dark':{p:'/dɑːk/',c:'黑暗的'},'east':{p:'/iːst/',c:'东方'},'west':{p:'/west/',c:'西方'},'north':{p:'/nɔːθ/',c:'北方'},'south':{p:'/saʊθ/',c:'南方'},'food':{p:'/fuːd/',c:'食物'},'wood':{p:'/wʊd/',c:'木头'},'line':{p:'/laɪn/',c:'线'},'long':{p:'/lɒŋ/',c:'长的'},'love':{p:'/lʌv/',c:'爱'},'life':{p:'/laɪf/',c:'生活'},'time':{p:'/taɪm/',c:'时间'},'year':{p:'/jɪə/',c:'年'},'week':{p:'/wiːk/',c:'星期'},'name':{p:'/neɪm/',c:'名字'},'game':{p:'/ɡeɪm/',c:'游戏'},'home':{p:'/həʊm/',c:'家'},'room':{p:'/ruːm/',c:'房间'},'school':{p:'/skuːl/',c:'学校'},'phone':{p:'/fəʊn/',c:'电话'},'green':{p:'/ɡriːn/',c:'绿色'},'happy':{p:'/ˈhæpi/',c:'快乐的'},'apple':{p:'/ˈæpl/',c:'苹果'},'cloud':{p:'/klaʊd/',c:'云'},'dance':{p:'/dɑːns/',c:'跳舞'},'smile':{p:'/smaɪl/',c:'微笑'},'tiger':{p:'/ˈtaɪɡə/',c:'老虎'},'water':{p:'/ˈwɔːtə/',c:'水'},'music':{p:'/ˈmjuːzɪk/',c:'音乐'},'light':{p:'/laɪt/',c:'光'},'sweet':{p:'/swiːt/',c:'甜的'},'brave':{p:'/breɪv/',c:'勇敢的'},'dream':{p:'/driːm/',c:'梦'},'peace':{p:'/piːs/',c:'和平'},'queen':{p:'/kwiːn/',c:'女王'},'horse':{p:'/hɔːs/',c:'马'},'plant':{p:'/plɑːnt/',c:'植物'},'stone':{p:'/stəʊn/',c:'石头'},'world':{p:'/wɜːld/',c:'世界'},'candy':{p:'/ˈkændi/',c:'糖果'},'house':{p:'/haʊs/',c:'房子'},'ocean':{p:'/ˈəʊʃn/',c:'海洋'},'river':{p:'/ˈrɪvə/',c:'河流'},'bread':{p:'/bred/',c:'面包'},'grape':{p:'/ɡreɪp/',c:'葡萄'},'table':{p:'/ˈteɪbl/',c:'桌子'},'chair':{p:'/tʃeə/',c:'椅子'},'clock':{p:'/klɒk/',c:'时钟'},'panda':{p:'/ˈpændə/',c:'熊猫'},'robot':{p:'/ˈrəʊbɒt/',c:'机器人'},'train':{p:'/treɪn/',c:'火车'},'black':{p:'/blæk/',c:'黑色'},'white':{p:'/waɪt/',c:'白色'},'brown':{p:'/braʊn/',c:'棕色'},'three':{p:'/θriː/',c:'三'},'seven':{p:'/ˈsevn/',c:'七'},'eight':{p:'/eɪt/',c:'八'},'nine':{p:'/naɪn/',c:'九'},'rabbit':{p:'/ˈræbɪt/',c:'兔子'},'flower':{p:'/ˈflaʊə/',c:'花'},'monkey':{p:'/ˈmʌŋki/',c:'猴子'},'garden':{p:'/ˈɡɑːdn/',c:'花园'},'pretty':{p:'/ˈprɪti/',c:'漂亮的'},'rocket':{p:'/ˈrɒkɪt/',c:'火箭'},'sunset':{p:'/ˈsʌnset/',c:'日落'},'forest':{p:'/ˈfɒrɪst/',c:'森林'},'golden':{p:'/ˈɡəʊldən/',c:'金色的'},'winter':{p:'/ˈwɪntə/',c:'冬天'},'spring':{p:'/sprɪŋ/',c:'春天'},'summer':{p:'/ˈsʌmə/',c:'夏天'},'planet':{p:'/ˈplænɪt/',c:'星球'},'butter':{p:'/ˈbʌtə/',c:'黄油'},'cookie':{p:'/ˈkʊki/',c:'饼干'},'peanut':{p:'/ˈpiːnʌt/',c:'花生'},'silver':{p:'/ˈsɪlvə/',c:'银色'},'turtle':{p:'/ˈtɜːtl/',c:'乌龟'},'puzzle':{p:'/ˈpʌzl/',c:'拼图'},'bubble':{p:'/ˈbʌbl/',c:'泡泡'},'gentle':{p:'/ˈdʒentl/',c:'温柔的'},'island':{p:'/ˈaɪlənd/',c:'岛屿'},'jungle':{p:'/ˈdʒʌŋɡl/',c:'丛林'},'pencil':{p:'/ˈpensl/',c:'铅笔'},'window':{p:'/ˈwɪndəʊ/',c:'窗户'},'orange':{p:'/ˈɒrɪndʒ/',c:'橙子'},'banana':{p:'/bəˈnɑːnə/',c:'香蕉'},'animal':{p:'/ˈænɪml/',c:'动物'},'friend':{p:'/frend/',c:'朋友'},'market':{p:'/ˈmɑːkɪt/',c:'市场'},'purple':{p:'/ˈpɜːpl/',c:'紫色'},'yellow':{p:'/ˈjeləʊ/',c:'黄色'},'rainbow':{p:'/ˈreɪnbəʊ/',c:'彩虹'},'unicorn':{p:'/ˈjuːnɪkɔːn/',c:'独角兽'},'sunshine':{p:'/ˈsʌnʃaɪn/',c:'阳光'},'crystal':{p:'/ˈkrɪstl/',c:'水晶'},'diamond':{p:'/ˈdaɪəmənd/',c:'钻石'},'magical':{p:'/ˈmædʒɪkl/',c:'神奇的'},'fantasy':{p:'/ˈfæntəsi/',c:'幻想'},'glitter':{p:'/ˈɡlɪtə/',c:'闪光'},'sparkle':{p:'/ˈspɑːkl/',c:'闪耀'},'princess':{p:'/prɪnˈses/',c:'公主'},'treasure':{p:'/ˈtreʒə/',c:'宝藏'},'mystery':{p:'/ˈmɪstri/',c:'神秘'},'kingdom':{p:'/ˈkɪŋdəm/',c:'王国'},'cupcake':{p:'/ˈkʌpkeɪk/',c:'杯子蛋糕'},'mermaid':{p:'/ˈmɜːmeɪd/',c:'美人鱼'},'dolphin':{p:'/ˈdɒlfɪn/',c:'海豚'},'penguin':{p:'/ˈpeŋɡwɪn/',c:'企鹅'},'balloon':{p:'/bəˈluːn/',c:'气球'},'teacher':{p:'/ˈtiːtʃə/',c:'老师'},'kitchen':{p:'/ˈkɪtʃɪn/',c:'厨房'},'picture':{p:'/ˈpɪktʃə/',c:'图片'},'morning':{p:'/ˈmɔːnɪŋ/',c:'早晨'},'chicken':{p:'/ˈtʃɪkɪn/',c:'鸡'},'lantern':{p:'/ˈlæntən/',c:'灯笼'},'harvest':{p:'/ˈhɑːvɪst/',c:'收获'},'abandon':{p:'/əˈbændən/',c:'放弃'},'ability':{p:'/əˈbɪləti/',c:'能力'},'abroad':{p:'/əˈbrɔːd/',c:'国外'},'absence':{p:'/ˈæbsəns/',c:'缺席'},'absolute':{p:'/ˈæbsəluːt/',c:'绝对的'},'absorb':{p:'/əbˈzɔːb/',c:'吸收'},'abstract':{p:'/ˈæbstrækt/',c:'抽象的'},'abundant':{p:'/əˈbʌndənt/',c:'丰富的'},'academy':{p:'/əˈkædəmi/',c:'学院'},'accept':{p:'/əkˈsept/',c:'接受'},'access':{p:'/ˈækses/',c:'进入'},'accompany':{p:'/əˈkʌmpəni/',c:'陪伴'},'achieve':{p:'/əˈtʃiːv/',c:'实现'},'acquire':{p:'/əˈkwaɪə/',c:'获得'},'adapt':{p:'/əˈdæpt/',c:'适应'},'adequate':{p:'/ˈædɪkwət/',c:'足够的'},'adjust':{p:'/əˈdʒʌst/',c:'调整'},'admire':{p:'/ədˈmaɪə/',c:'钦佩'},'adopt':{p:'/əˈdɒpt/',c:'采纳'},'adult':{p:'/ˈædʌlt/',c:'成人'},'advance':{p:'/ədˈvɑːns/',c:'前进'},'adventure':{p:'/ədˈventʃə/',c:'冒险'},'advertise':{p:'/ˈædvətaɪz/',c:'广告'},'affect':{p:'/əˈfekt/',c:'影响'},'afford':{p:'/əˈfɔːd/',c:'负担得起'},'agency':{p:'/ˈeɪdʒənsi/',c:'代理机构'},'aggressive':{p:'/əˈɡresɪv/',c:'侵略性的'},'agriculture':{p:'/ˈæɡrɪkʌltʃə/',c:'农业'},'allocate':{p:'/ˈæləkeɪt/',c:'分配'},'alternative':{p:'/ɔːlˈtɜːnətɪv/',c:'替代的'},'ambition':{p:'/æmˈbɪʃn/',c:'抱负'},'analysis':{p:'/əˈnæləsɪs/',c:'分析'},'ancestor':{p:'/ˈænsestə/',c:'祖先'},'ancient':{p:'/ˈeɪnʃənt/',c:'古代的'},'annual':{p:'/ˈænjuəl/',c:'年度的'},'anxiety':{p:'/æŋˈzaɪəti/',c:'焦虑'},'apparent':{p:'/əˈpærənt/',c:'明显的'},'appetite':{p:'/ˈæpɪtaɪt/',c:'食欲'},'approach':{p:'/əˈprəʊtʃ/',c:'方法'},'appropriate':{p:'/əˈprəʊpriət/',c:'适当的'},'approve':{p:'/əˈpruːv/',c:'批准'},'argue':{p:'/ˈɑːɡjuː/',c:'争论'},'arrange':{p:'/əˈreɪndʒ/',c:'安排'},'arrest':{p:'/əˈrest/',c:'逮捕'},'arrival':{p:'/əˈraɪvl/',c:'到达'},'article':{p:'/ˈɑːtɪkl/',c:'文章'},'assume':{p:'/əˈsjuːm/',c:'假设'},'atmosphere':{p:'/ˈætməsfɪə/',c:'气氛'},'attach':{p:'/əˈtætʃ/',c:'附加'},'attain':{p:'/əˈteɪn/',c:'达到'},'attempt':{p:'/əˈtempt/',c:'尝试'},'attend':{p:'/əˈtend/',c:'参加'},'attitude':{p:'/ˈætɪtjuːd/',c:'态度'},'attract':{p:'/əˈtrækt/',c:'吸引'},'audience':{p:'/ˈɔːdiəns/',c:'观众'},'author':{p:'/ˈɔːθə/',c:'作者'},'authority':{p:'/ɔːˈθɒrəti/',c:'权威'},'available':{p:'/əˈveɪləbl/',c:'可用的'},'average':{p:'/ˈævərɪdʒ/',c:'平均的'},'avoid':{p:'/əˈvɔɪd/',c:'避免'},'award':{p:'/əˈwɔːd/',c:'奖励'},'aware':{p:'/əˈweə/',c:'意识到的'},'awful':{p:'/ˈɔːfl/',c:'糟糕的'},'balance':{p:'/ˈbæləns/',c:'平衡'},'barrier':{p:'/ˈbæriə/',c:'障碍'},'battle':{p:'/ˈbætl/',c:'战斗'},'behave':{p:'/bɪˈheɪv/',c:'行为'},'belief':{p:'/bɪˈliːf/',c:'信仰'},'benefit':{p:'/ˈbenɪfɪt/',c:'好处'},'biology':{p:'/baɪˈɒlədʒi/',c:'生物'},'budget':{p:'/ˈbʌdʒɪt/',c:'预算'},'burden':{p:'/ˈbɜːdn/',c:'负担'},'business':{p:'/ˈbɪznɪs/',c:'商业'},'calculate':{p:'/ˈkælkjuleɪt/',c:'计算'},'campaign':{p:'/kæmˈpeɪn/',c:'运动'},'capable':{p:'/ˈkeɪpəbl/',c:'有能力的'},'capture':{p:'/ˈkæptʃə/',c:'捕获'},'carbon':{p:'/ˈkɑːbən/',c:'碳'},'career':{p:'/kəˈrɪə/',c:'职业'},'category':{p:'/ˈkætəɡəri/',c:'类别'},'celebrate':{p:'/ˈselɪbreɪt/',c:'庆祝'},'challenge':{p:'/ˈtʃælɪndʒ/',c:'挑战'},'champion':{p:'/ˈtʃæmpiən/',c:'冠军'},'channel':{p:'/ˈtʃænl/',c:'频道'},'chapter':{p:'/ˈtʃæptə/',c:'章节'},'character':{p:'/ˈkærəktə/',c:'角色'},'charity':{p:'/ˈtʃærəti/',c:'慈善'},'chemical':{p:'/ˈkemɪkl/',c:'化学的'},'circumstance':{p:'/ˈsɜːkəmstəns/',c:'情况'},'civil':{p:'/ˈsɪvl/',c:'民事的'},'claim':{p:'/kleɪm/',c:'声称'},'clarify':{p:'/ˈklærɪfaɪ/',c:'澄清'},'classic':{p:'/ˈklæsɪk/',c:'经典的'},'climate':{p:'/ˈklaɪmət/',c:'气候'},'collapse':{p:'/kəˈlæps/',c:'倒塌'},'colleague':{p:'/ˈkɒliːɡ/',c:'同事'},'collection':{p:'/kəˈlekʃn/',c:'收藏'},'colonial':{p:'/kəˈləʊniəl/',c:'殖民地的'},'combine':{p:'/kəmˈbaɪn/',c:'结合'},'comedy':{p:'/ˈkɒmədi/',c:'喜剧'},'comfort':{p:'/ˈkʌmfət/',c:'舒适'},'command':{p:'/kəˈmɑːnd/',c:'命令'},'comment':{p:'/ˈkɒment/',c:'评论'},'commerce':{p:'/ˈkɒmɜːs/',c:'商业'},'commission':{p:'/kəˈmɪʃn/',c:'委员会'},'commit':{p:'/kəˈmɪt/',c:'承诺'},'communicate':{p:'/kəˈmjuːnɪkeɪt/',c:'沟通'},'community':{p:'/kəˈmjuːnəti/',c:'社区'},'companion':{p:'/kəmˈpæniən/',c:'同伴'},'company':{p:'/ˈkʌmpəni/',c:'公司'},'compare':{p:'/kəmˈpeə/',c:'比较'},'compete':{p:'/kəmˈpiːt/',c:'竞争'},'complex':{p:'/ˈkɒmpleks/',c:'复杂的'},'component':{p:'/kəmˈpəʊnənt/',c:'组成部分'},'concentrate':{p:'/ˈkɒnsntreɪt/',c:'集中'},'concept':{p:'/ˈkɒnsept/',c:'概念'},'concern':{p:'/kənˈsɜːn/',c:'关心'},'conclude':{p:'/kənˈkluːd/',c:'结论'},'concrete':{p:'/ˈkɒŋkriːt/',c:'具体的'},'conduct':{p:'/kənˈdʌkt/',c:'进行'},'conference':{p:'/ˈkɒnfərəns/',c:'会议'},'confidence':{p:'/ˈkɒnfɪdəns/',c:'信心'},'confirm':{p:'/kənˈfɜːm/',c:'确认'},'conflict':{p:'/ˈkɒnflɪkt/',c:'冲突'},'confront':{p:'/kənˈfrʌnt/',c:'面对'},'conscious':{p:'/ˈkɒnʃəs/',c:'有意识的'},'consequence':{p:'/ˈkɒnsɪkwəns/',c:'后果'},'conservative':{p:'/kənˈsɜːvətɪv/',c:'保守的'},'considerable':{p:'/kənˈsɪdərəbl/',c:'相当大的'},'consistent':{p:'/kənˈsɪstənt/',c:'一致的'},'constant':{p:'/ˈkɒnstənt/',c:'不变的'},'construct':{p:'/kənˈstrʌkt/',c:'建造'},'consumer':{p:'/kənˈsjuːmə/',c:'消费者'},'contact':{p:'/ˈkɒntækt/',c:'联系'},'contain':{p:'/kənˈteɪn/',c:'包含'},'contemporary':{p:'/kənˈtemprəri/',c:'当代的'},'content':{p:'/ˈkɒntent/',c:'内容'},'contest':{p:'/ˈkɒntest/',c:'比赛'},'continue':{p:'/kənˈtɪnjuː/',c:'继续'},'contract':{p:'/ˈkɒntrækt/',c:'合同'},'contrary':{p:'/ˈkɒntrəri/',c:'相反的'},'contrast':{p:'/ˈkɒntrɑːst/',c:'对比'},'contribute':{p:'/kənˈtrɪbjuːt/',c:'贡献'},'convert':{p:'/kənˈvɜːt/',c:'转换'},'convince':{p:'/kənˈvɪns/',c:'说服'},'cooperate':{p:'/kəʊˈɒpəreɪt/',c:'合作'},'coordinate':{p:'/kəʊˈɔːdɪneɪt/',c:'协调'},'core':{p:'/kɔː/',c:'核心'},'corporate':{p:'/ˈkɔːpərət/',c:'公司的'},'correspond':{p:'/ˌkɒrəˈspɒnd/',c:'对应'},'council':{p:'/ˈkaʊnsl/',c:'委员会'},'country':{p:'/ˈkʌntri/',c:'国家'},'courage':{p:'/ˈkʌrɪdʒ/',c:'勇气'},'creative':{p:'/kriˈeɪtɪv/',c:'创造性的'},'crime':{p:'/kraɪm/',c:'犯罪'},'crisis':{p:'/ˈkraɪsɪs/',c:'危机'},'criterion':{p:'/kraɪˈtɪəriən/',c:'标准'},'criticism':{p:'/ˈkrɪtɪsɪzəm/',c:'批评'},'crucial':{p:'/ˈkruːʃl/',c:'关键的'},'cultural':{p:'/ˈkʌltʃərəl/',c:'文化的'},'curious':{p:'/ˈkjʊəriəs/',c:'好奇的'},'currency':{p:'/ˈkʌrənsi/',c:'货币'},'current':{p:'/ˈkʌrənt/',c:'当前的'},'curriculum':{p:'/kəˈrɪkjələm/',c:'课程'},'customer':{p:'/ˈkʌstəmə/',c:'顾客'},'damage':{p:'/ˈdæmɪdʒ/',c:'损害'},'debate':{p:'/dɪˈbeɪt/',c:'辩论'},'decade':{p:'/ˈdekeɪd/',c:'十年'},'decline':{p:'/dɪˈklaɪn/',c:'下降'},'defend':{p:'/dɪˈfend/',c:'防御'},'deficit':{p:'/ˈdefɪsɪt/',c:'赤字'},'define':{p:'/dɪˈfaɪn/',c:'定义'},'definition':{p:'/ˌdefɪˈnɪʃn/',c:'定义'},'demonstrate':{p:'/ˈdemənstreɪt/',c:'演示'},'deny':{p:'/dɪˈnaɪ/',c:'否认'},'depict':{p:'/dɪˈpɪkt/',c:'描绘'},'deposit':{p:'/dɪˈpɒzɪt/',c:'存款'},'depression':{p:'/dɪˈpreʃn/',c:'沮丧'},'derive':{p:'/dɪˈraɪv/',c:'得出'},'describe':{p:'/dɪˈskraɪb/',c:'描述'},'design':{p:'/dɪˈzaɪn/',c:'设计'},'desire':{p:'/dɪˈzaɪə/',c:'渴望'},'desperate':{p:'/ˈdespərət/',c:'绝望的'},'destination':{p:'/ˌdestɪˈneɪʃn/',c:'目的地'},'determine':{p:'/dɪˈtɜːmɪn/',c:'决定'},'develop':{p:'/dɪˈveləp/',c:'发展'},'device':{p:'/dɪˈvaɪs/',c:'设备'},'devote':{p:'/dɪˈvəʊt/',c:'奉献'},'dimension':{p:'/daɪˈmenʃn/',c:'维度'},'diminish':{p:'/dɪˈmɪnɪʃ/',c:'减少'},'discipline':{p:'/ˈdɪsəplɪn/',c:'纪律'},'discover':{p:'/dɪˈskʌvə/',c:'发现'},'discriminate':{p:'/dɪˈskrɪmɪneɪt/',c:'歧视'},'disease':{p:'/dɪˈziːz/',c:'疾病'},'disorder':{p:'/dɪsˈɔːdə/',c:'混乱'},'display':{p:'/dɪˈspleɪ/',c:'展示'},'dispose':{p:'/dɪˈspəʊz/',c:'处置'},'dispute':{p:'/dɪˈspjuːt/',c:'争议'},'distinct':{p:'/dɪˈstɪŋkt/',c:'独特的'},'distribute':{p:'/dɪˈstrɪbjuːt/',c:'分配'},'diverse':{p:'/daɪˈvɜːs/',c:'多样的'},'document':{p:'/ˈdɒkjumənt/',c:'文件'},'domestic':{p:'/dəˈmestɪk/',c:'国内的'},'dominant':{p:'/ˈdɒmɪnənt/',c:'主导的'},'donate':{p:'/dəʊˈneɪt/',c:'捐赠'},'drama':{p:'/ˈdrɑːmə/',c:'戏剧'},'dramatic':{p:'/drəˈmætɪk/',c:'戏剧性的'},'dynamic':{p:'/daɪˈnæmɪk/',c:'动态的'},'ecology':{p:'/iˈkɒlədʒi/',c:'生态学'},'economic':{p:'/ˌiːkəˈnɒmɪk/',c:'经济的'},'edition':{p:'/ɪˈdɪʃn/',c:'版本'},'educate':{p:'/ˈedʒukeɪt/',c:'教育'},'effective':{p:'/ɪˈfektɪv/',c:'有效的'},'efficiency':{p:'/ɪˈfɪʃnsi/',c:'效率'},'element':{p:'/ˈelɪmənt/',c:'元素'},'eliminate':{p:'/ɪˈlɪmɪneɪt/',c:'消除'},'elsewhere':{p:'/ˌelsˈweə/',c:'其他地方'},'embrace':{p:'/ɪmˈbreɪs/',c:'拥抱'},'emerge':{p:'/iˈmɜːdʒ/',c:'出现'},'emergency':{p:'/iˈmɜːdʒənsi/',c:'紧急情况'},'emotion':{p:'/ɪˈməʊʃn/',c:'情感'},'emphasis':{p:'/ˈemfəsɪs/',c:'强调'},'empire':{p:'/ˈempaɪə/',c:'帝国'},'employee':{p:'/ɪmˈplɔɪiː/',c:'雇员'},'employer':{p:'/ɪmˈplɔɪə/',c:'雇主'},'enable':{p:'/ɪˈneɪbl/',c:'使能够'},'encounter':{p:'/ɪnˈkaʊntə/',c:'遇到'},'encourage':{p:'/ɪnˈkʌrɪdʒ/',c:'鼓励'},'energy':{p:'/ˈenədʒi/',c:'能量'},'engage':{p:'/ɪnˈɡeɪdʒ/',c:'参与'},'enhance':{p:'/ɪnˈhɑːns/',c:'增强'},'enormous':{p:'/ɪˈnɔːməs/',c:'巨大的'},'ensure':{p:'/ɪnˈʃʊə/',c:'确保'},'enterprise':{p:'/ˈentəpraɪz/',c:'企业'},'enthusiasm':{p:'/ɪnˈθjuːziæzəm/',c:'热情'},'entire':{p:'/ɪnˈtaɪə/',c:'整个的'},'environment':{p:'/ɪnˈvaɪrənmənt/',c:'环境'},'equal':{p:'/ˈiːkwəl/',c:'平等的'},'equipment':{p:'/ɪˈkwɪpmənt/',c:'设备'},'essential':{p:'/ɪˈsenʃl/',c:'必要的'},'establish':{p:'/ɪˈstæblɪʃ/',c:'建立'},'estate':{p:'/ɪˈsteɪt/',c:'房地产'},'estimate':{p:'/ˈestɪmeɪt/',c:'估计'},'evaluate':{p:'/ɪˈvæljueɪt/',c:'评估'},'eventually':{p:'/ɪˈventʃuəli/',c:'最终'},'evidence':{p:'/ˈevɪdəns/',c:'证据'},'evolution':{p:'/ˌiːvəˈluːʃn/',c:'进化'},'evolve':{p:'/iˈvɒlv/',c:'演变'},'examine':{p:'/ɪɡˈzæmɪn/',c:'检查'},'exceed':{p:'/ɪkˈsiːd/',c:'超过'},'exception':{p:'/ɪkˈsepʃn/',c:'例外'},'exchange':{p:'/ɪksˈtʃeɪndʒ/',c:'交换'},'excitement':{p:'/ɪkˈsaɪtmənt/',c:'兴奋'},'exclude':{p:'/ɪkˈskluːd/',c:'排除'},'executive':{p:'/ɪɡˈzekjətɪv/',c:'行政的'},'exercise':{p:'/ˈeksəsaɪz/',c:'锻炼'},'exhibit':{p:'/ɪɡˈzɪbɪt/',c:'展览'},'existence':{p:'/ɪɡˈzɪstəns/',c:'存在'},'expansion':{p:'/ɪkˈspænʃn/',c:'扩张'},'expect':{p:'/ɪkˈspekt/',c:'期望'},'expenditure':{p:'/ɪkˈspendɪtʃə/',c:'支出'},'experiment':{p:'/ɪkˈsperɪmənt/',c:'实验'},'expert':{p:'/ˈekspɜːt/',c:'专家'},'exploit':{p:'/ɪkˈsplɔɪt/',c:'利用'},'explore':{p:'/ɪkˈsplɔː/',c:'探索'},'export':{p:'/ɪkˈspɔːt/',c:'出口'},'expose':{p:'/ɪkˈspəʊz/',c:'暴露'},'extend':{p:'/ɪkˈstend/',c:'延伸'},'extent':{p:'/ɪkˈstent/',c:'程度'},'external':{p:'/ɪkˈstɜːnl/',c:'外部的'},'extraordinary':{p:'/ɪkˈstrɔːdnri/',c:'非凡的'},'extreme':{p:'/ɪkˈstriːm/',c:'极端的'},'facility':{p:'/fəˈsɪləti/',c:'设施'},'factor':{p:'/ˈfæktə/',c:'因素'},'failure':{p:'/ˈfeɪljə/',c:'失败'},'fairly':{p:'/ˈfeəli/',c:'相当地'},'federal':{p:'/ˈfedərəl/',c:'联邦的'},'fiction':{p:'/ˈfɪkʃn/',c:'小说'},'finance':{p:'/ˈfaɪnæns/',c:'金融'},'finding':{p:'/ˈfaɪndɪŋ/',c:'发现'},'foreign':{p:'/ˈfɒrən/',c:'外国的'},'formal':{p:'/ˈfɔːml/',c:'正式的'},'formation':{p:'/fɔːˈmeɪʃn/',c:'形成'},'formula':{p:'/ˈfɔːmjələ/',c:'公式'},'fortunately':{p:'/ˈfɔːtʃənətli/',c:'幸运地'},'foundation':{p:'/faʊnˈdeɪʃn/',c:'基础'},'framework':{p:'/ˈfreɪmwɜːk/',c:'框架'},'freedom':{p:'/ˈfriːdəm/',c:'自由'},'frequency':{p:'/ˈfriːkwənsi/',c:'频率'},'frontier':{p:'/ˈfrʌntɪə/',c:'前沿'},'function':{p:'/ˈfʌŋkʃn/',c:'功能'},'fund':{p:'/fʌnd/',c:'基金'},'fundamental':{p:'/ˌfʌndəˈmentl/',c:'基本的'},'furthermore':{p:'/ˌfɜːðəˈmɔː/',c:'此外'},'gender':{p:'/ˈdʒendə/',c:'性别'},'generally':{p:'/ˈdʒenrəli/',c:'一般地'},'generate':{p:'/ˈdʒenəreɪt/',c:'产生'},'global':{p:'/ˈɡləʊbl/',c:'全球的'},'guarantee':{p:'/ˌɡærənˈtiː/',c:'保证'},'guidance':{p:'/ˈɡaɪdns/',c:'指导'},'handle':{p:'/ˈhændl/',c:'处理'},'highlight':{p:'/ˈhaɪlaɪt/',c:'强调'},'historian':{p:'/hɪˈstɔːriən/',c:'历史学家'},'household':{p:'/ˈhaʊshəʊld/',c:'家庭'},'identify':{p:'/aɪˈdentɪfaɪ/',c:'识别'},'illustrate':{p:'/ˈɪləstreɪt/',c:'说明'},'image':{p:'/ˈɪmɪdʒ/',c:'图像'},'imagine':{p:'/ɪˈmædʒɪn/',c:'想象'},'immigration':{p:'/ˌɪmɪˈɡreɪʃn/',c:'移民'},'impact':{p:'/ˈɪmpækt/',c:'影响'},'implement':{p:'/ˈɪmplɪment/',c:'实施'},'implication':{p:'/ˌɪmplɪˈkeɪʃn/',c:'含义'},'import':{p:'/ɪmˈpɔːt/',c:'进口'},'impose':{p:'/ɪmˈpəʊz/',c:'强加'},'impressive':{p:'/ɪmˈpresɪv/',c:'令人印象深刻的'},'incident':{p:'/ˈɪnsɪdənt/',c:'事件'},'income':{p:'/ˈɪnkʌm/',c:'收入'},'incorporate':{p:'/ɪnˈkɔːpəreɪt/',c:'包含'},'increase':{p:'/ɪnˈkriːs/',c:'增加'},'indicate':{p:'/ˈɪndɪkeɪt/',c:'表明'},'individual':{p:'/ˌɪndɪˈvɪdʒuəl/',c:'个人的'},'industrial':{p:'/ɪnˈdʌstriəl/',c:'工业的'},'infection':{p:'/ɪnˈfekʃn/',c:'感染'},'inflation':{p:'/ɪnˈfleɪʃn/',c:'通货膨胀'},'influence':{p:'/ˈɪnfluəns/',c:'影响'},'initially':{p:'/ɪˈnɪʃəli/',c:'最初'},'innovation':{p:'/ˌɪnəˈveɪʃn/',c:'创新'},'inquiry':{p:'/ɪnˈkwaɪəri/',c:'调查'},'insistence':{p:'/ɪnˈsɪstəns/',c:'坚持'},'inspection':{p:'/ɪnˈspekʃn/',c:'检查'},'instance':{p:'/ˈɪnstəns/',c:'实例'},'institute':{p:'/ˈɪnstɪtjuːt/',c:'机构'},'instrument':{p:'/ˈɪnstrəmənt/',c:'乐器'},'insurance':{p:'/ɪnˈʃʊərəns/',c:'保险'},'integrate':{p:'/ˈɪntɪɡreɪt/',c:'整合'},'intellectual':{p:'/ˌɪntəˈlektʃuəl/',c:'智力的'},'intelligence':{p:'/ɪnˈtelɪdʒəns/',c:'智力'},'intense':{p:'/ɪnˈtens/',c:'强烈的'},'interact':{p:'/ˌɪntərˈækt/',c:'互动'},'internal':{p:'/ɪnˈtɜːnl/',c:'内部的'},'interpret':{p:'/ɪnˈtɜːprɪt/',c:'解释'},'intervention':{p:'/ˌɪntəˈvenʃn/',c:'干预'},'invest':{p:'/ɪnˈvest/',c:'投资'},'investigate':{p:'/ɪnˈvestɪɡeɪt/',c:'调查'},'investment':{p:'/ɪnˈvestmənt/',c:'投资'},'involve':{p:'/ɪnˈvɒlv/',c:'涉及'},'isolate':{p:'/ˈaɪsəleɪt/',c:'隔离'},'issue':{p:'/ˈɪʃuː/',c:'问题'},'journal':{p:'/ˈdʒɜːnl/',c:'期刊'},'justify':{p:'/ˈdʒʌstɪfaɪ/',c:'证明'},'kingdom':{p:'/ˈkɪŋdəm/',c:'王国'},'label':{p:'/ˈleɪbl/',c:'标签'},'landscape':{p:'/ˈlændskeɪp/',c:'风景'},'largely':{p:'/ˈlɑːdʒli/',c:'很大程度上'},'launch':{p:'/lɔːntʃ/',c:'发射'},'lawyer':{p:'/ˈlɔːjə/',c:'律师'},'leadership':{p:'/ˈliːdəʃɪp/',c:'领导力'},'league':{p:'/liːɡ/',c:'联盟'},'leather':{p:'/ˈleðə/',c:'皮革'},'lecture':{p:'/ˈlektʃə/',c:'讲座'},'legal':{p:'/ˈliːɡl/',c:'法律的'},'legislation':{p:'/ˌledʒɪsˈleɪʃn/',c:'立法'},'liberal':{p:'/ˈlɪbərəl/',c:'自由的'},'likelihood':{p:'/ˈlaɪklihʊd/',c:'可能性'},'literary':{p:'/ˈlɪtərəri/',c:'文学的'},'literature':{p:'/ˈlɪtrətʃə/',c:'文学'},'loan':{p:'/ləʊn/',c:'贷款'},'logical':{p:'/ˈlɒdʒɪkl/',c:'逻辑的'},'magnetic':{p:'/mæɡˈnetɪk/',c:'磁性的'},'maintain':{p:'/meɪnˈteɪn/',c:'维持'},'major':{p:'/ˈmeɪdʒə/',c:'主要的'},'manage':{p:'/ˈmænɪdʒ/',c:'管理'},'manipulate':{p:'/məˈnɪpjuleɪt/',c:'操纵'},'manufacture':{p:'/ˌmænjuˈfæktʃə/',c:'制造'},'margin':{p:'/ˈmɑːdʒɪn/',c:'边缘'},'massive':{p:'/ˈmæsɪv/',c:'巨大的'},'material':{p:'/məˈtɪəriəl/',c:'材料'},'mechanism':{p:'/ˈmekənɪzəm/',c:'机制'},'medium':{p:'/ˈmiːdiəm/',c:'媒介'},'mental':{p:'/ˈmentl/',c:'精神的'},'merely':{p:'/ˈmɪəli/',c:'仅仅'},'migration':{p:'/maɪˈɡreɪʃn/',c:'迁移'},'military':{p:'/ˈmɪlɪtri/',c:'军事的'},'minimal':{p:'/ˈmɪnɪml/',c:'最小的'},'minimum':{p:'/ˈmɪnɪməm/',c:'最小值'},'ministry':{p:'/ˈmɪnɪstri/',c:'部门'},'minor':{p:'/ˈmaɪnə/',c:'次要的'},'mission':{p:'/ˈmɪʃn/',c:'使命'},'mode':{p:'/məʊd/',c:'模式'},'monitor':{p:'/ˈmɒnɪtə/',c:'监控'},'mood':{p:'/muːd/',c:'心情'},'moral':{p:'/ˈmɒrəl/',c:'道德的'},'moreover':{p:'/mɔːrˈəʊvə/',c:'此外'},'mostly':{p:'/ˈməʊstli/',c:'大多数'},'motion':{p:'/ˈməʊʃn/',c:'运动'},'motivation':{p:'/ˌməʊtɪˈveɪʃn/',c:'动机'},'movement':{p:'/ˈmuːvmənt/',c:'运动'},'multiple':{p:'/ˈmʌltɪpl/',c:'多个的'},'municipal':{p:'/mjuːˈnɪsɪpl/',c:'市政的'},'murder':{p:'/ˈmɜːdə/',c:'谋杀'},'mutual':{p:'/ˈmjuːtʃuəl/',c:'相互的'},'namely':{p:'/ˈneɪmli/',c:'即'},'negotiate':{p:'/nɪˈɡəʊʃieɪt/',c:'谈判'},'nervous':{p:'/ˈnɜːvəs/',c:'紧张的'},'network':{p:'/ˈnetwɜːk/',c:'网络'},'nevertheless':{p:'/ˌnevəðəˈles/',c:'然而'},'nuclear':{p:'/ˈnjuːkliə/',c:'核的'},'numerous':{p:'/ˈnjuːmərəs/',c:'许多的'},'nutrition':{p:'/njuˈtrɪʃn/',c:'营养'},'objective':{p:'/əbˈdʒektɪv/',c:'目标'},'obtain':{p:'/əbˈteɪn/',c:'获得'},'obvious':{p:'/ˈɒbviəs/',c:'明显的'},'occasion':{p:'/əˈkeɪʒn/',c:'场合'},'occupy':{p:'/ˈɒkjupaɪ/',c:'占据'},'offence':{p:'/əˈfens/',c:'犯罪'},'official':{p:'/əˈfɪʃl/',c:'官方的'},'ongoing':{p:'/ˈɒnɡəʊɪŋ/',c:'持续的'},'operational':{p:'/ˌɒpəˈreɪʃənl/',c:'操作的'},'opponent':{p:'/əˈpəʊnənt/',c:'对手'},'opportunity':{p:'/ˌɒpəˈtjuːnəti/',c:'机会'},'opposition':{p:'/ˌɒpəˈzɪʃn/',c:'反对'},'option':{p:'/ˈɒpʃn/',c:'选择'},'orbit':{p:'/ˈɔːbɪt/',c:'轨道'},'organize':{p:'/ˈɔːɡənaɪz/',c:'组织'},'original':{p:'/əˈrɪdʒənl/',c:'原始的'},'outcome':{p:'/ˈaʊtkʌm/',c:'结果'},'outlook':{p:'/ˈaʊtlʊk/',c:'前景'},'output':{p:'/ˈaʊtpʊt/',c:'输出'},'overall':{p:'/ˌəʊvərˈɔːl/',c:'整体的'},'overcome':{p:'/ˌəʊvəˈkʌm/',c:'克服'},'overseas':{p:'/ˌəʊvəˈsiːz/',c:'海外'},'overview':{p:'/ˈəʊvəvjuː/',c:'概述'},'oxygen':{p:'/ˈɒksɪdʒən/',c:'氧气'},'panel':{p:'/ˈpænl/',c:'面板'},'paradigm':{p:'/ˈpærədaɪm/',c:'范例'},'paragraph':{p:'/ˈpærəɡrɑːf/',c:'段落'},'parallel':{p:'/ˈpærəlel/',c:'平行的'},'participate':{p:'/pɑːˈtɪsɪpeɪt/',c:'参与'},'particularly':{p:'/pəˈtɪkjələli/',c:'特别地'},'partner':{p:'/ˈpɑːtnə/',c:'伙伴'},'passage':{p:'/ˈpæsɪdʒ/',c:'通道'},'passive':{p:'/ˈpæsɪv/',c:'被动的'},'perceive':{p:'/pəˈsiːv/',c:'感知'},'percent':{p:'/pəˈsent/',c:'百分比'},'performance':{p:'/pəˈfɔːməns/',c:'表现'},'permanent':{p:'/ˈpɜːmənənt/',c:'永久的'},'permission':{p:'/pəˈmɪʃn/',c:'许可'},'personality':{p:'/ˌpɜːsəˈnæləti/',c:'个性'},'perspective':{p:'/pəˈspektɪv/',c:'观点'},'phenomenon':{p:'/fɪˈnɒmɪnən/',c:'现象'},'philosophy':{p:'/fɪˈlɒsəfi/',c:'哲学'},'physical':{p:'/ˈfɪzɪkl/',c:'物理的'},'physician':{p:'/fɪˈzɪʃn/',c:'医生'},'planet':{p:'/ˈplænɪt/',c:'星球'},'pleasure':{p:'/ˈpleʒə/',c:'快乐'},'poetry':{p:'/ˈpəʊɪtri/',c:'诗歌'},'policy':{p:'/ˈpɒləsi/',c:'政策'},'pollution':{p:'/pəˈluːʃn/',c:'污染'},'popular':{p:'/ˈpɒpjələ/',c:'流行的'},'portion':{p:'/ˈpɔːʃn/',c:'部分'},'portrait':{p:'/ˈpɔːtreɪt/',c:'肖像'},'positive':{p:'/ˈpɒzətɪv/',c:'积极的'},'possession':{p:'/pəˈzeʃn/',c:'拥有'},'potential':{p:'/pəˈtenʃl/',c:'潜力'},'poverty':{p:'/ˈpɒvəti/',c:'贫穷'},'practically':{p:'/ˈpræktɪkli/',c:'实际上'},'predict':{p:'/prɪˈdɪkt/',c:'预测'},'preparation':{p:'/ˌprepəˈreɪʃn/',c:'准备'},'prescribe':{p:'/prɪˈskraɪb/',c:'开处方'},'presence':{p:'/ˈprezns/',c:'存在'},'preserve':{p:'/prɪˈzɜːv/',c:'保存'},'pressure':{p:'/ˈpreʃə/',c:'压力'},'previously':{p:'/ˈpriːviəsli/',c:'以前'},'primary':{p:'/ˈpraɪməri/',c:'主要的'},'principle':{p:'/ˈprɪnsəpl/',c:'原则'},'priority':{p:'/praɪˈɒrəti/',c:'优先'},'prisoner':{p:'/ˈprɪznə/',c:'囚犯'},'procedure':{p:'/prəˈsiːdʒə/',c:'程序'},'proceed':{p:'/prəˈsiːd/',c:'继续'},'process':{p:'/ˈprəʊses/',c:'过程'},'professional':{p:'/prəˈfeʃənl/',c:'专业的'},'profit':{p:'/ˈprɒfɪt/',c:'利润'},'prohibit':{p:'/prəˈhɪbɪt/',c:'禁止'},'project':{p:'/ˈprɒdʒekt/',c:'项目'},'prominent':{p:'/ˈprɒmɪnənt/',c:'突出的'},'promise':{p:'/ˈprɒmɪs/',c:'承诺'},'promote':{p:'/prəˈməʊt/',c:'促进'},'prompt':{p:'/prɒmpt/',c:'迅速的'},'proportion':{p:'/prəˈpɔːʃn/',c:'比例'},'proposal':{p:'/prəˈpəʊzl/',c:'提议'},'prospect':{p:'/ˈprɒspekt/',c:'前景'},'protection':{p:'/prəˈtekʃn/',c:'保护'},'protein':{p:'/ˈprəʊtiːn/',c:'蛋白质'},'provision':{p:'/prəˈvɪʒn/',c:'提供'},'psychological':{p:'/ˌsaɪkəˈlɒdʒɪkl/',c:'心理的'},'publication':{p:'/ˌpʌblɪˈkeɪʃn/',c:'出版物'},'publisher':{p:'/ˈpʌblɪʃə/',c:'出版商'},'purchase':{p:'/ˈpɜːtʃəs/',c:'购买'},'pursue':{p:'/pəˈsjuː/',c:'追求'},'qualification':{p:'/ˌkwɒlɪfɪˈkeɪʃn/',c:'资格'},'qualitative':{p:'/ˈkwɒlɪtətɪv/',c:'定性的'},'radical':{p:'/ˈrædɪkl/',c:'根本的'},'randomly':{p:'/ˈrændəmli/',c:'随机地'},'range':{p:'/reɪndʒ/',c:'范围'},'rapid':{p:'/ˈræpɪd/',c:'迅速的'},'rarely':{p:'/ˈreəli/',c:'很少'},'ratio':{p:'/ˈreɪʃiəʊ/',c:'比率'},'readily':{p:'/ˈredɪli/',c:'容易地'},'realistic':{p:'/ˌriːəˈlɪstɪk/',c:'现实的'},'reasonably':{p:'/ˈriːznəbli/',c:'合理地'},'receiver':{p:'/rɪˈsiːvə/',c:'接收者'},'recession':{p:'/rɪˈseʃn/',c:'衰退'},'recognition':{p:'/ˌrekəɡˈnɪʃn/',c:'识别'},'recovery':{p:'/rɪˈkʌvəri/',c:'恢复'},'reduction':{p:'/rɪˈdʌkʃn/',c:'减少'},'reference':{p:'/ˈrefrəns/',c:'参考'},'reflect':{p:'/rɪˈflekt/',c:'反映'},'reform':{p:'/rɪˈfɔːm/',c:'改革'},'regime':{p:'/reɪˈʒiːm/',c:'政权'},'region':{p:'/ˈriːdʒən/',c:'地区'},'register':{p:'/ˈredʒɪstə/',c:'注册'},'regulate':{p:'/ˈreɡjuleɪt/',c:'调节'},'reinforce':{p:'/ˌriːɪnˈfɔːs/',c:'加强'},'reject':{p:'/rɪˈdʒekt/',c:'拒绝'},'relate':{p:'/rɪˈleɪt/',c:'关联'},'release':{p:'/rɪˈliːs/',c:'释放'},'relevant':{p:'/ˈreləvənt/',c:'相关的'},'relief':{p:'/rɪˈliːf/',c:'缓解'},'religion':{p:'/rɪˈlɪdʒən/',c:'宗教'},'reluctant':{p:'/rɪˈlʌktənt/',c:'不情愿的'},'rely':{p:'/rɪˈlaɪ/',c:'依赖'},'remain':{p:'/rɪˈmeɪn/',c:'保持'},'remark':{p:'/rɪˈmɑːk/',c:'评论'},'remedy':{p:'/ˈremədi/',c:'补救'},'remote':{p:'/rɪˈməʊt/',c:'遥远的'},'removal':{p:'/rɪˈmuːvl/',c:'移除'},'represent':{p:'/ˌreprɪˈzent/',c:'代表'},'reputation':{p:'/ˌrepjuˈteɪʃn/',c:'声誉'},'request':{p:'/rɪˈkwest/',c:'请求'},'require':{p:'/rɪˈkwaɪə/',c:'需要'},'reservation':{p:'/ˌrezəˈveɪʃn/',c:'保留'},'resident':{p:'/ˈrezɪdənt/',c:'居民'},'resolution':{p:'/ˌrezəˈluːʃn/',c:'决心'},'resolve':{p:'/rɪˈzɒlv/',c:'解决'},'resort':{p:'/rɪˈzɔːt/',c:'度假村'},'resource':{p:'/rɪˈzɔːs/',c:'资源'},'respectively':{p:'/rɪˈspektɪvli/',c:'分别地'},'respond':{p:'/rɪˈspɒnd/',c:'回应'},'responsibility':{p:'/rɪˌspɒnsəˈbɪləti/',c:'责任'},'restore':{p:'/rɪˈstɔː/',c:'恢复'},'restrict':{p:'/rɪˈstrɪkt/',c:'限制'},'retain':{p:'/rɪˈteɪn/',c:'保留'},'reveal':{p:'/rɪˈviːl/',c:'揭示'},'revenue':{p:'/ˈrevənjuː/',c:'收入'},'reverse':{p:'/rɪˈvɜːs/',c:'相反的'},'review':{p:'/rɪˈvjuː/',c:'审查'},'revolution':{p:'/ˌrevəˈluːʃn/',c:'革命'},'rhythm':{p:'/ˈrɪðəm/',c:'节奏'},'rival':{p:'/ˈraɪvl/',c:'对手'},'route':{p:'/ruːt/',c:'路线'},'rural':{p:'/ˈrʊərəl/',c:'农村的'},'sample':{p:'/ˈsɑːmpl/',c:'样本'},'sanction':{p:'/ˈsæŋkʃn/',c:'制裁'},'scale':{p:'/skeɪl/',c:'规模'},'scandal':{p:'/ˈskændl/',c:'丑闻'},'scarcely':{p:'/ˈskeəsli/',c:'几乎不'},'scholar':{p:'/ˈskɒlə/',c:'学者'},'scientific':{p:'/ˌsaɪənˈtɪfɪk/',c:'科学的'},'scope':{p:'/skəʊp/',c:'范围'},'sculpture':{p:'/ˈskʌlptʃə/',c:'雕塑'},'secondary':{p:'/ˈsekəndri/',c:'次要的'},'section':{p:'/ˈsekʃn/',c:'部分'},'sector':{p:'/ˈsektə/',c:'部门'},'security':{p:'/sɪˈkjʊərəti/',c:'安全'},'selection':{p:'/sɪˈlekʃn/',c:'选择'},'senator':{p:'/ˈsenətə/',c:'参议员'},'sensible':{p:'/ˈsensəbl/',c:'明智的'},'sequence':{p:'/ˈsiːkwəns/',c:'序列'},'series':{p:'/ˈsɪəriːz/',c:'系列'},'severely':{p:'/sɪˈvɪəli/',c:'严重地'},'sexual':{p:'/ˈsekʃuəl/',c:'性的'},'shelter':{p:'/ˈʃeltə/',c:'庇护所'},'shift':{p:'/ʃɪft/',c:'转变'},'signal':{p:'/ˈsɪɡnəl/',c:'信号'},'significance':{p:'/sɪɡˈnɪfɪkəns/',c:'重要性'},'similarly':{p:'/ˈsɪmələli/',c:'类似地'},'situate':{p:'/ˈsɪtʃueɪt/',c:'使位于'},'skilled':{p:'/skɪld/',c:'熟练的'},'slavery':{p:'/ˈsleɪvəri/',c:'奴隶制'},'slightly':{p:'/ˈslaɪtli/',c:'轻微地'},'social':{p:'/ˈsəʊʃl/',c:'社会的'},'solely':{p:'/ˈsəʊlli/',c:'唯一地'},'somewhat':{p:'/ˈsʌmwɒt/',c:'有点'},'source':{p:'/sɔːs/',c:'来源'},'specialist':{p:'/ˈspeʃəlɪst/',c:'专家'},'species':{p:'/ˈspiːʃiːz/',c:'物种'},'sphere':{p:'/sfɪə/',c:'领域'},'spiritual':{p:'/ˈspɪrɪtʃuəl/',c:'精神的'},'spokesman':{p:'/ˈspəʊksmən/',c:'发言人'},'stability':{p:'/stəˈbɪləti/',c:'稳定'},'statue':{p:'/ˈstætʃuː/',c:'雕像'},'status':{p:'/ˈsteɪtəs/',c:'地位'},'steadily':{p:'/ˈstedɪli/',c:'稳定地'},'stimulus':{p:'/ˈstɪmjələs/',c:'刺激'},'stock':{p:'/stɒk/',c:'库存'},'storage':{p:'/ˈstɔːrɪdʒ/',c:'存储'},'strategy':{p:'/ˈstrætədʒi/',c:'策略'},'strengthen':{p:'/ˈstreŋθn/',c:'加强'},'stress':{p:'/stres/',c:'压力'},'structure':{p:'/ˈstrʌktʃə/',c:'结构'},'struggle':{p:'/ˈstrʌɡl/',c:'斗争'},'submission':{p:'/səbˈmɪʃn/',c:'提交'},'substitute':{p:'/ˈsʌbstɪtjuːt/',c:'替代品'},'sufficient':{p:'/səˈfɪʃnt/',c:'足够的'},'suggestion':{p:'/səˈdʒestʃən/',c:'建议'},'summary':{p:'/ˈsʌməri/',c:'摘要'},'supplement':{p:'/ˈsʌplɪmənt/',c:'补充'},'supply':{p:'/səˈplaɪ/',c:'供应'},'supporter':{p:'/səˈpɔːtə/',c:'支持者'},'suppose':{p:'/səˈpəʊz/',c:'假设'},'supreme':{p:'/suːˈpriːm/',c:'最高的'},'surface':{p:'/ˈsɜːfɪs/',c:'表面'},'surgery':{p:'/ˈsɜːdʒəri/',c:'外科手术'},'surplus':{p:'/ˈsɜːpləs/',c:'盈余'},'survey':{p:'/ˈsɜːveɪ/',c:'调查'},'survival':{p:'/səˈvaɪvl/',c:'生存'},'survive':{p:'/səˈvaɪv/',c:'幸存'},'suspect':{p:'/səˈspekt/',c:'怀疑'},'suspend':{p:'/səˈspend/',c:'暂停'},'sustain':{p:'/səˈsteɪn/',c:'维持'},'symbol':{p:'/ˈsɪmbl/',c:'符号'},'sympathy':{p:'/ˈsɪmpəθi/',c:'同情'},'target':{p:'/ˈtɑːɡɪt/',c:'目标'},'technical':{p:'/ˈteknɪkl/',c:'技术的'},'technique':{p:'/tekˈniːk/',c:'技术'},'technological':{p:'/ˌteknəˈlɒdʒɪkl/',c:'技术的'},'temporary':{p:'/ˈtemprəri/',c:'暂时的'},'tension':{p:'/ˈtenʃn/',c:'紧张'},'territory':{p:'/ˈterɪtri/',c:'领土'},'theme':{p:'/θiːm/',c:'主题'},'theology':{p:'/θiˈɒlədʒi/',c:'神学'},'theoretical':{p:'/ˌθɪəˈretɪkl/',c:'理论的'},'therapy':{p:'/ˈθerəpi/',c:'治疗'},'thereby':{p:'/ˌðeəˈbaɪ/',c:'因此'},'threaten':{p:'/ˈθretn/',c:'威胁'},'tolerance':{p:'/ˈtɒlərəns/',c:'容忍'},'tough':{p:'/tʌf/',c:'艰苦的'},'tourism':{p:'/ˈtʊərɪzəm/',c:'旅游业'},'track':{p:'/træk/',c:'轨道'},'tradition':{p:'/trəˈdɪʃn/',c:'传统'},'transfer':{p:'/trænsˈfɜː/',c:'转移'},'transform':{p:'/trænsˈfɔːm/',c:'转化'},'transition':{p:'/trænˈzɪʃn/',c:'过渡'},'transport':{p:'/ˈtrænspɔːt/',c:'交通'},'treaty':{p:'/ˈtriːti/',c:'条约'},'trend':{p:'/trend/',c:'趋势'},'trigger':{p:'/ˈtrɪɡə/',c:'触发'},'troop':{p:'/truːp/',c:'部队'},'tropical':{p:'/ˈtrɒpɪkl/',c:'热带的'},'ultimately':{p:'/ˈʌltɪmətli/',c:'最终'},'undergo':{p:'/ˌʌndəˈɡəʊ/',c:'经历'},'undertake':{p:'/ˌʌndəˈteɪk/',c:'承担'},'undoubtedly':{p:'/ʌnˈdaʊtɪdli/',c:'毫无疑问'},'uniform':{p:'/ˈjuːnɪfɔːm/',c:'制服'},'unique':{p:'/juˈniːk/',c:'独特的'},'universal':{p:'/ˌjuːnɪˈvɜːsl/',c:'普遍的'},'unlikely':{p:'/ʌnˈlaɪkli/',c:'不太可能的'},'urban':{p:'/ˈɜːbən/',c:'城市的'},'valid':{p:'/ˈvælɪd/',c:'有效的'},'variable':{p:'/ˈveəriəbl/',c:'变量'},'variation':{p:'/ˌveəriˈeɪʃn/',c:'变化'},'variety':{p:'/vəˈraɪəti/',c:'多样性'},'vehicle':{p:'/ˈviːɪkl/',c:'车辆'},'version':{p:'/ˈvɜːʃn/',c:'版本'},'victim':{p:'/ˈvɪktɪm/',c:'受害者'},'violence':{p:'/ˈvaɪələns/',c:'暴力'},'virtually':{p:'/ˈvɜːtʃuəli/',c:'实际上'},'visible':{p:'/ˈvɪzəbl/',c:'可见的'},'vision':{p:'/ˈvɪʒn/',c:'视力'},'visual':{p:'/ˈvɪʒuəl/',c:'视觉的'},'vital':{p:'/ˈvaɪtl/',c:'至关重要的'},'volume':{p:'/ˈvɒljuːm/',c:'体积'},'voluntary':{p:'/ˈvɒləntri/',c:'自愿的'},'vulnerable':{p:'/ˈvʌlnərəbl/',c:'脆弱的'},'welfare':{p:'/ˈwelfeə/',c:'福利'},'whereas':{p:'/weərˈæz/',c:'然而'},'widespread':{p:'/ˈwaɪdspred/',c:'广泛的'},'willing':{p:'/ˈwɪlɪŋ/',c:'愿意的'},'withdraw':{p:'/wɪðˈdrɔː/',c:'撤回'},'witness':{p:'/ˈwɪtnəs/',c:'目击者'},'wonder':{p:'/ˈwʌndə/',c:'想知道'},'worldwide':{p:'/ˈwɜːldwaɪd/',c:'全世界的'},'worthy':{p:'/ˈwɜːði/',c:'值得的'},'yield':{p:'/jiːld/',c:'产出'}
+  },
+
+  lookupWord(word) {
+    return this.wordDict[word] || null;
+  },
+
+  async fetchWordInfo(word) {
+    if (this.wordDict[word]) return { p: this.wordDict[word].p, c: this.wordDict[word].c };
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
+    try {
+      const enc = encodeURIComponent(word);
+      const [pRes, tRes] = await Promise.allSettled([
+        fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + enc, { signal: controller.signal })
+          .then(r => r.ok ? r.json() : Promise.reject()),
+        fetch('https://api.mymemory.translated.net/get?q=' + enc + '&langpair=en|zh', { signal: controller.signal })
+          .then(r => r.ok ? r.json() : Promise.reject())
+      ]);
+      clearTimeout(timeoutId);
+      let p = null, c = null;
+      if (pRes.status === 'fulfilled' && Array.isArray(pRes.value) && pRes.value[0]) {
+        const d = pRes.value[0];
+        p = d.phonetic || (d.phonetics && d.phonetics[0] && d.phonetics[0].text) || null;
+      }
+      if (tRes.status === 'fulfilled' && tRes.value && tRes.value.responseData && tRes.value.responseData.translatedText) {
+        c = tRes.value.responseData.translatedText;
+        if (c.toLowerCase() === word.toLowerCase()) c = null;
+      }
+      if (p || c) {
+        this.wordDict[word] = { p: p || '', c: c || '' };
+        return { p: p || '', c: c || '' };
+      }
+      return null;
+    } catch (e) { clearTimeout(timeoutId); return null; }
+  },
+
+  prefetchLevelWords(level) {
+    const list = this.words[level];
+    if (!list || !list.length) return;
+    const shuffled = [...list].sort(() => Math.random() - 0.5);
+    const toFetch = shuffled.slice(0, 15).filter(w => !this.wordDict[w]);
+    toFetch.forEach((word, i) => {
+      setTimeout(() => this.fetchWordInfo(word), i * 200);
+    });
+  },
+
+  speakWord(word) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(word);
+    u.lang = 'en-US';
+    u.rate = 0.75;
+    u.pitch = 1.1;
+    window.speechSynthesis.speak(u);
+  },
+
+  togglePause() {
+    if (this.screen !== 'game' && this.screen !== 'mini-game') return;
+    this.isPaused = !this.isPaused;
+    if (this.isPaused) {
+      // show pause overlay on both game and mini-game screens
+      const screenEl = document.getElementById('screen-' + this.screen);
+      const overlay = document.createElement('div');
+      overlay.id = 'pause-overlay';
+      overlay.style.cssText = 'position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.55);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:30;border-radius:25px;cursor:pointer;';
+      overlay.innerHTML = '<div style="font-size:56px">⏸️</div><div style="font-size:24px;color:#fff;font-weight:bold;margin-top:8px;">暂停中 — 点击继续</div>';
+      overlay.addEventListener('click', () => this.togglePause());
+      screenEl.style.position = screenEl.style.position || 'relative';
+      screenEl.appendChild(overlay);
+      // blur hidden input so keystrokes don't leak through
+      if (this.screen === 'game') this.dom.hiddenInput.blur();
+      // update hint
+      this.dom.hintText.textContent = '⏸️ 游戏已暂停，点击画面或按 Esc 继续';
+    } else {
+      const overlay = document.getElementById('pause-overlay');
+      if (overlay) overlay.remove();
+      this.dom.hintText.textContent = '⌨️ 点击上方彩色区域开始打字吧！单词输完自动提交~';
+      if (this.screen === 'game') this.dom.hiddenInput.focus();
+    }
+  },
+
+  levelConfig: {
+    1: { name: '🌻 花园草地', wordsNeeded: 8, timeLimit: 14, emoji: '🐱' },
+    2: { name: '🌲 魔法森林', wordsNeeded: 10, timeLimit: 12, emoji: '🐰' },
+    3: { name: '🌊 海底世界', wordsNeeded: 10, timeLimit: 10, emoji: '🐬' },
+    4: { name: '🚀 星空宇宙', wordsNeeded: 10, timeLimit: 9, emoji: '🦊' },
+    5: { name: '🏰 终极城堡', wordsNeeded: 8, timeLimit: 8, emoji: '🦄' }
+  },
+
+  // dom refs
+  dom: {},
+
+  init() {
+    this.buildWordLists();
+    this.dom = {
+      start: document.getElementById('screen-start'),
+      game: document.getElementById('screen-game'),
+      levelComplete: document.getElementById('screen-level-complete'),
+      miniGame: document.getElementById('screen-mini-game'),
+      victory: document.getElementById('screen-victory'),
+      gameLevel: document.getElementById('game-level'),
+      gameScore: document.getElementById('game-score'),
+      gameHearts: document.getElementById('game-hearts'),
+      comboDisplay: document.getElementById('combo-display'),
+      progressBar: document.getElementById('progress-bar'),
+      gameArea: document.getElementById('game-area'),
+      typingDisplay: document.getElementById('typing-display'),
+      displayText: document.getElementById('display-text'),
+      hiddenInput: document.getElementById('hidden-input'),
+      lcMessage: document.getElementById('lc-message'),
+      lcStars: document.getElementById('lc-stars'),
+      lcDetail: document.getElementById('lc-detail'),
+      lcBtn: document.getElementById('lc-btn'),
+      miniArea: document.getElementById('mini-area'),
+      miniTimer: document.getElementById('mini-timer'),
+      miniCaught: document.getElementById('mini-caught'),
+      finalScore: document.getElementById('final-score'),
+      hintText: document.getElementById('hint-text'),
+      keyboard: document.getElementById('keyboard'),
+      kbRows: [
+        document.getElementById('kb-row1'),
+        document.getElementById('kb-row2'),
+        document.getElementById('kb-row3')
+      ]
+    };
+
+    this.buildKeyboard();
+
+    // global keyboard listener
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        this.togglePause();
+        return;
+      }
+      if (this.isPaused) { e.preventDefault(); return; }
+      if (this.screen === 'start' && e.key.length === 1) {
+        this.start();
+        return;
+      }
+      if (this.screen === 'game') {
+        this.dom.hiddenInput.focus();
+      }
+      if (this.screen === 'mini-game') {
+        this.handleMiniKey(e.key.toLowerCase());
+      }
+    });
+
+    // click on game area to focus
+    this.dom.gameArea.addEventListener('click', () => {
+      if (this.screen === 'game') this.dom.hiddenInput.focus();
+    });
+    this.dom.typingDisplay.addEventListener('click', () => {
+      if (this.screen === 'game') this.dom.hiddenInput.focus();
+    });
+
+    // hidden input handler
+    this.dom.hiddenInput.addEventListener('input', (e) => {
+      if (this.isPaused) return;
+      if (this.screen !== 'game') return;
+      const typed = e.target.value.toLowerCase().replace(/[^a-z]/g, '');
+      // detect wrong key press
+      const prevLen = this._prevTypedLen || 0;
+      if (typed.length > prevLen && this.currentWord) {
+        const newChar = typed[typed.length - 1];
+        const expectedChar = this.currentWord[typed.length - 1];
+        if (expectedChar && newChar !== expectedChar) {
+          this.flashWrongKey(expectedChar);
+        }
+      }
+      this._prevTypedLen = typed.length;
+      e.target.value = typed;
+      this.updateTypingDisplay(typed);
+      this.checkWordMatch(typed);
+    });
+
+    // focus/blur for typing hint
+    this.dom.hiddenInput.addEventListener('focus', () => {
+      if (this.screen === 'game' && this.dom.hintText) {
+        this.dom.hintText.textContent = '✨ 正在输入中...';
+      }
+    });
+    this.dom.hiddenInput.addEventListener('blur', () => {
+      if (this.dom.hintText) {
+        this.dom.hintText.textContent = '👆 点击上方彩色区域开始打字吧！单词输完自动提交~';
+      }
+    });
+  },
+
+  // ─── On-screen Keyboard ────────────────────────
+  kbLayout: [
+    ['q','w','e','r','t','y','u','i','o','p'],
+    ['a','s','d','f','g','h','j','k','l'],
+    ['z','x','c','v','b','n','m']
+  ],
+
+  buildKeyboard() {
+    this.kbKeys = {};
+    this.kbLayout.forEach((row, ri) => {
+      const rowEl = this.dom.kbRows[ri];
+      if (!rowEl) return;
+      rowEl.innerHTML = '';
+      row.forEach(letter => {
+        const key = document.createElement('div');
+        key.className = 'key';
+        key.textContent = letter;
+        key.dataset.letter = letter;
+        this.kbKeys[letter] = key;
+        rowEl.appendChild(key);
+      });
+    });
+  },
+
+  updateKeyboard(typed) {
+    // reset all keys
+    Object.values(this.kbKeys).forEach(k => {
+      k.className = 'key';
+    });
+
+    const target = this.currentWord;
+    if (!target) return;
+
+    for (let i = 0; i < target.length; i++) {
+      const letter = target[i];
+      const key = this.kbKeys[letter];
+      if (!key) continue;
+
+      if (i < typed.length) {
+        if (typed[i] === target[i]) {
+          key.classList.add('correct');
+        } else {
+          // wrong letter at this position - don't mark it correct
+        }
+      }
+
+      // the next untyped letter is the "target" to highlight
+      if (i === typed.length) {
+        key.classList.add('highlight');
+        break; // only highlight the next one
+      }
+    }
+  },
+
+  flashWrongKey(letter) {
+    const key = this.kbKeys[letter];
+    if (!key) return;
+    key.classList.add('wrong-flash');
+    setTimeout(() => {
+      if (key.classList.contains('wrong-flash')) {
+        key.classList.remove('wrong-flash');
+        this.updateKeyboard(this.dom.hiddenInput.value);
+      }
+    }, 300);
+  },
+
+  showScreen(name) {
+    Object.values(this.dom).forEach(el => {
+      if (el && el.classList) el.classList.remove('active');
+    });
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const map = {
+      'start': this.dom.start,
+      'game': this.dom.game,
+      'level-complete': this.dom.levelComplete,
+      'mini-game': this.dom.miniGame,
+      'victory': this.dom.victory
+    };
+    if (map[name]) map[name].classList.add('active');
+    this.screen = name;
+  },
+
+  start() {
+    this.level = 1;
+    this.totalScore = 0;
+    this.showScreen('game');
+    this.startLevel(1);
+  },
+
+  startLevel(lvl) {
+    clearInterval(this.timerInterval);
+    this.level = lvl;
+    const cfg = this.levelConfig[lvl];
+    this.score = 0;
+    this.lives = this.maxLives;
+    this.wordsCleared = 0;
+    this.wordsNeeded = cfg.wordsNeeded;
+    this.combo = 0;
+    this.maxCombo = 0;
+    this.currentWord = '';
+
+    this.dom.gameLevel.textContent = `第${lvl}关 ${cfg.name}`;
+    this.dom.gameScore.textContent = '0';
+    this.dom.progressBar.style.width = '0%';
+    this.dom.comboDisplay.classList.remove('show');
+    this.updateHearts();
+    this.updateTypingDisplay('');
+    this.dom.hiddenInput.value = '';
+    this.dom.hiddenInput.focus();
+    this.prefetchLevelWords(lvl);
+
+    // update character
+    const charEl = this.dom.gameArea.querySelector('.character-area');
+    if (charEl) charEl.textContent = cfg.emoji;
+
+    // clear old bubbles
+    this.dom.gameArea.querySelectorAll('.word-bubble').forEach(b => b.remove());
+
+    // spawn first word after short delay
+    setTimeout(() => this.spawnWord(), 400);
+  },
+
+  spawnWord() {
+    if (this.screen !== 'game') return;
+    if (this.wordsCleared >= this.wordsNeeded) {
+      this.completeLevel();
+      return;
+    }
+
+    // pick random word
+    const list = this.words[this.level];
+    let word;
+    do {
+      word = list[Math.floor(Math.random() * list.length)];
+    } while (word === this.currentWord && list.length > 1);
+    this.currentWord = word;
+    this._prevTypedLen = 0;
+    this.updateKeyboard('');
+
+    // pronounce & lookup
+    this.speakWord(word);
+    const info = this.lookupWord(word);
+
+    // clear old bubble
+    this.dom.gameArea.querySelectorAll('.word-bubble').forEach(b => b.remove());
+
+    // create bubble
+    const area = this.dom.gameArea;
+    const areaW = area.clientWidth;
+    const areaH = area.clientHeight;
+    const bubbleSize = Math.min(190, areaW * 0.45);
+    const x = Math.random() * (areaW - bubbleSize - 20) + 10;
+    const y = Math.random() * (areaH - bubbleSize - 80) + 30;
+
+    const bubble = document.createElement('div');
+    bubble.className = 'word-bubble';
+    bubble.style.cssText = `
+      left: ${x}px;
+      top: ${y}px;
+      width: ${bubbleSize}px;
+      height: ${bubbleSize}px;
+    `;
+    const phoneticText = info ? info.p : '';
+    const chineseText = info ? info.c : '';
+    const phoneticHTML = `<span class="bubble-phonetic" style="font-size:${bubbleSize * 0.11}px">${phoneticText}</span>`;
+    const chineseHTML = `<span class="bubble-chinese" style="font-size:${bubbleSize * 0.1}px">${chineseText}</span>`;
+    bubble.innerHTML = `
+      <span class="bubble-word" style="font-size:${bubbleSize * 0.22}px">${word}</span>
+      ${phoneticHTML}
+      ${chineseHTML}
+      <button class="bubble-speaker" style="width:${bubbleSize * 0.2}px;height:${bubbleSize * 0.2}px;font-size:${bubbleSize * 0.12}px" title="再读一次">🔊</button>
+      <div class="timer-ring">
+        <div class="timer-ring-fill" style="width:100%"></div>
+      </div>
+    `;
+
+    // speaker button click handler
+    bubble.querySelector('.bubble-speaker').addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.speakWord(this.currentWord);
+    });
+
+    area.appendChild(bubble);
+
+    // async fetch to fill in missing phonetic/translation
+    const _fetchWord = word;
+    this.fetchWordInfo(_fetchWord).then(fetchedInfo => {
+      if (!fetchedInfo) return;
+      if (this.currentWord !== _fetchWord) return;
+      const b = this.dom.gameArea.querySelector('.word-bubble');
+      if (!b) return;
+      const pSpan = b.querySelector('.bubble-phonetic');
+      const cSpan = b.querySelector('.bubble-chinese');
+      if (pSpan && fetchedInfo.p) pSpan.textContent = fetchedInfo.p;
+      if (cSpan && fetchedInfo.c) cSpan.textContent = fetchedInfo.c;
+    });
+
+    // reset input
+    this.dom.hiddenInput.value = '';
+    this.updateTypingDisplay('');
+
+    // start timer
+    const cfg = this.levelConfig[this.level];
+    this.wordTimeLimit = cfg.timeLimit;
+    this.wordTimer = this.wordTimeLimit;
+    const timerFill = bubble.querySelector('.timer-ring-fill');
+
+    if (this.timerInterval) clearInterval(this.timerInterval);
+    this.timerInterval = setInterval(() => {
+      if (this.isPaused) return;
+      this.wordTimer -= 0.1;
+      const pct = Math.max(0, (this.wordTimer / this.wordTimeLimit) * 100);
+      if (timerFill) timerFill.style.width = pct + '%';
+      if (pct < 30) {
+        timerFill.style.background = '#ff6b6b';
+      } else if (pct < 60) {
+        timerFill.style.background = 'linear-gradient(90deg, #feca57, #ff6b6b)';
+      }
+
+      if (this.wordTimer <= 0) {
+        clearInterval(this.timerInterval);
+        this.onWordTimeout(bubble);
+      }
+    }, 100);
+
+    this.dom.hiddenInput.focus();
+  },
+
+  updateTypingDisplay(typed) {
+    this.updateKeyboard(typed);
+    const target = this.currentWord;
+    let html = '';
+    for (let i = 0; i < target.length; i++) {
+      if (i < typed.length) {
+        if (typed[i] === target[i]) {
+          html += `<span class="typed">${target[i]}</span>`;
+        } else {
+          html += `<span style="color:#ff6b6b">${target[i]}</span>`;
+        }
+      } else {
+        html += `<span class="remaining">${target[i]}</span>`;
+      }
+    }
+    html += '<span class="cursor">|</span>';
+    this.dom.displayText.innerHTML = html || '<span class="remaining">等待输入...</span><span class="cursor">|</span>';
+  },
+
+  checkWordMatch(typed) {
+    if (!this.currentWord) return;
+    if (typed === this.currentWord) {
+      this.onWordCorrect();
+    }
+  },
+
+  onWordCorrect() {
+    clearInterval(this.timerInterval);
+    this.combo++;
+    if (this.combo > this.maxCombo) this.maxCombo = this.combo;
+
+    // combo display
+    if (this.combo >= 2) {
+      this.dom.comboDisplay.textContent = '🔥 x' + this.combo;
+      this.dom.comboDisplay.classList.add('show');
+      this.dom.comboDisplay.style.animation = 'none';
+      void this.dom.comboDisplay.offsetWidth;
+      this.dom.comboDisplay.style.animation = 'comboBounce 0.3s ease';
+    }
+
+    // calculate points
+    const basePoints = this.currentWord.length * 10;
+    const comboMult = Math.min(this.combo, 10);
+    const points = basePoints * comboMult * this.level;
+    this.score += points;
+    this.totalScore += points;
+    this.wordsCleared++;
+
+    // update UI
+    this.dom.gameScore.textContent = this.score;
+    const progressPct = (this.wordsCleared / this.wordsNeeded) * 100;
+    this.dom.progressBar.style.width = progressPct + '%';
+
+    // pop animation
+    const bubble = this.dom.gameArea.querySelector('.word-bubble');
+    if (bubble) {
+      bubble.classList.add('pop');
+      const rect = bubble.getBoundingClientRect();
+      const appRect = document.getElementById('app').getBoundingClientRect();
+      const cx = rect.left + rect.width / 2 - appRect.left;
+      const cy = rect.top + rect.height / 2 - appRect.top;
+      this.createParticles(cx, cy, '#feca57');
+      this.createParticles(cx, cy, '#ff9ff3');
+      this.createParticles(cx, cy, '#48dbfb');
+      this.createFloatScore(cx, cy - 30, '+' + points);
+
+      setTimeout(() => {
+        bubble.remove();
+        this.currentWord = '';
+        this.dom.hiddenInput.value = '';
+        this.updateTypingDisplay('');
+        setTimeout(() => this.spawnWord(), 350);
+      }, 400);
+    }
+  },
+
+  onWordTimeout(bubble) {
+    clearInterval(this.timerInterval);
+    this.combo = 0;
+    this.dom.comboDisplay.classList.remove('show');
+    this.lives--;
+    this.updateHearts();
+
+    if (bubble) {
+      bubble.classList.add('timeout');
+      setTimeout(() => bubble.remove(), 500);
+    }
+
+    if (this.lives <= 0) {
+      // restart level
+      this.createConfetti(false);
+      const levelMsg = document.createElement('div');
+      levelMsg.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:36px;color:#ff6b6b;font-weight:bold;z-index:25;pointer-events:none;text-align:center;';
+      levelMsg.innerHTML = '😢 没命了！<br><span style="font-size:20px">再试一次~</span>';
+      this.dom.gameArea.appendChild(levelMsg);
+      setTimeout(() => {
+        levelMsg.remove();
+        this.startLevel(this.level);
+      }, 2000);
+      return;
+    }
+
+    // spawn next word
+    this.currentWord = '';
+    this.dom.hiddenInput.value = '';
+    this.updateTypingDisplay('');
+    setTimeout(() => this.spawnWord(), 500);
+  },
+
+  updateHearts() {
+    let html = '';
+    for (let i = 0; i < this.maxLives; i++) {
+      html += `<span class="heart${i >= this.lives ? ' lost' : ''}">❤️</span>`;
+    }
+    this.dom.gameHearts.innerHTML = html;
+  },
+
+  completeLevel() {
+    clearInterval(this.timerInterval);
+    this.dom.gameArea.querySelectorAll('.word-bubble').forEach(b => b.remove());
+
+    // calculate stars (1-3)
+    const cfg = this.levelConfig[this.level];
+    const timeBonus = this.combo >= 3 ? 1 : 0;
+    const perfectBonus = this.lives === this.maxLives ? 1 : 0;
+    const stars = 1 + timeBonus + perfectBonus;
+
+    this.totalScore += this.score;
+
+    this.showScreen('level-complete');
+    this.dom.lcMessage.textContent = ['', '继续加油！', '非常棒！', '完美通关！'][stars];
+
+    let starsHtml = '';
+    for (let i = 0; i < 3; i++) {
+      starsHtml += `<span class="star">${i < stars ? '⭐' : '☆'}</span>`;
+    }
+    this.dom.lcStars.innerHTML = starsHtml;
+    this.dom.lcDetail.textContent = `第${this.level}关完成 | 得分: ${this.score} | 最大连击: x${this.maxCombo}`;
+
+    if (this.level >= 5) {
+      this.dom.lcBtn.textContent = '🏆 查看结果';
+      this.dom.lcBtn.onclick = () => this.showVictory();
+    } else if (this.bonusLevels.includes(this.level)) {
+      this.dom.lcBtn.textContent = '🌟 进入奖励关卡';
+      this.dom.lcBtn.onclick = () => this.startMiniGame();
+    } else {
+      this.dom.lcBtn.textContent = '▶ 下一关';
+      this.dom.lcBtn.onclick = () => this.nextLevel();
+    }
+
+    this.createConfetti(true);
+  },
+
+  nextLevel() {
+    this.level++;
+    this.showScreen('game');
+    this.startLevel(this.level);
+  },
+
+  // ─── Mini Game: Star Catching ─────────────────
+  startMiniGame() {
+    this.showScreen('mini-game');
+    this.miniGameActive = true;
+    this.miniTimer = 20;
+    this.miniCaught = 0;
+    this.dom.miniTimer.textContent = '20';
+    this.dom.miniCaught.textContent = '0';
+    this.dom.miniArea.innerHTML = '';
+
+    // countdown
+    this.miniInterval = setInterval(() => {
+      if (this.isPaused) return;
+      this.miniTimer--;
+      this.dom.miniTimer.textContent = this.miniTimer;
+      if (this.miniTimer <= 0) {
+        this.endMiniGame();
+      }
+    }, 1000);
+
+    // spawn stars
+    this.spawnMiniStar();
+    this.miniSpawnInterval = setInterval(() => {
+      if (this.isPaused) return;
+      if (this.miniGameActive) this.spawnMiniStar();
+    }, 800);
+  },
+
+  spawnMiniStar() {
+    if (!this.miniGameActive) return;
+    const area = this.dom.miniArea;
+    const letters = 'abcdefghijklmnopqrstuvwxyz';
+    const letter = letters[Math.floor(Math.random() * letters.length)];
+    const x = Math.random() * (area.clientWidth - 40);
+    const duration = 5 + Math.random() * 4;
+
+    const star = document.createElement('div');
+    star.className = 'mini-star';
+    star.textContent = letter;
+    star.style.left = x + 'px';
+    star.style.top = '-40px';
+    star.style.animationDuration = duration + 's';
+    star.dataset.letter = letter;
+    area.appendChild(star);
+
+    // remove when animation ends
+    setTimeout(() => {
+      if (star.parentNode) star.remove();
+    }, duration * 1000);
+  },
+
+  handleMiniKey(key) {
+    if (!this.miniGameActive || key.length !== 1 || !/[a-z]/.test(key)) return;
+
+    const stars = this.dom.miniArea.querySelectorAll('.mini-star');
+    for (const star of stars) {
+      if (star.dataset.letter === key && !star.classList.contains('caught')) {
+        star.classList.add('caught');
+        this.miniCaught++;
+        this.dom.miniCaught.textContent = this.miniCaught;
+
+        // bonus points animation
+        const rect = star.getBoundingClientRect();
+        const appRect = document.getElementById('app').getBoundingClientRect();
+        const cx = rect.left + rect.width / 2 - appRect.left;
+        const cy = rect.top - appRect.top;
+        this.createFloatScore(cx, cy, '+5');
+
+        setTimeout(() => { if (star.parentNode) star.remove(); }, 300);
+        return;
+      }
+    }
+  },
+
+  endMiniGame() {
+    this.miniGameActive = false;
+    clearInterval(this.miniInterval);
+    clearInterval(this.miniSpawnInterval);
+    this.dom.miniArea.querySelectorAll('.mini-star').forEach(s => s.remove());
+
+    const bonusPoints = this.miniCaught * 5;
+    this.totalScore += bonusPoints;
+
+    // show result briefly then go to next level
+    this.dom.miniTimer.textContent = '完成!';
+    const msg = document.createElement('div');
+    msg.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#feca57;font-size:40px;font-weight:bold;z-index:30;pointer-events:none;text-align:center;';
+    msg.innerHTML = `✨ +${bonusPoints} 奖励分!`;
+    this.dom.miniArea.appendChild(msg);
+
+    setTimeout(() => {
+      this.level++;
+      this.showScreen('game');
+      this.startLevel(this.level);
+    }, 2000);
+  },
+
+  // ─── Victory ──────────────────────────────────
+  showVictory() {
+    this.showScreen('victory');
+    this.dom.finalScore.textContent = this.totalScore;
+    this.createConfetti(true);
+  },
+
+  restart() {
+    this.level = 1;
+    this.totalScore = 0;
+    this.showScreen('game');
+    this.startLevel(1);
+  },
+
+  // ─── Effects ──────────────────────────────────
+  createParticles(x, y, color) {
+    const container = document.getElementById('app');
+    for (let i = 0; i < 8; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const angle = (Math.PI * 2 * i) / 8;
+      const dist = 30 + Math.random() * 40;
+      p.style.cssText = `
+        left: ${x}px;
+        top: ${y}px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: ${color};
+        --dx: ${Math.cos(angle) * dist}px;
+        --dy: ${Math.sin(angle) * dist}px;
+      `;
+      container.appendChild(p);
+      setTimeout(() => p.remove(), 800);
+    }
+  },
+
+  createFloatScore(x, y, text) {
+    const container = document.getElementById('app');
+    const el = document.createElement('div');
+    el.className = 'float-score';
+    el.style.cssText = `left:${x}px;top:${y}px;`;
+    el.textContent = text;
+    container.appendChild(el);
+    setTimeout(() => el.remove(), 1000);
+  },
+
+  createConfetti(big) {
+    const container = document.getElementById('app');
+    const colors = ['#ff6b6b','#feca57','#48dbfb','#ff9ff3','#54a0ff','#5f27cd','#00d2d3','#ff6348','#7bed9f','#e056a0'];
+    const count = big ? 60 : 20;
+    for (let i = 0; i < count; i++) {
+      setTimeout(() => {
+        const c = document.createElement('div');
+        c.className = 'confetti';
+        c.style.cssText = `
+          left: ${Math.random() * 100}%;
+          top: -20px;
+          background: ${colors[Math.floor(Math.random() * colors.length)]};
+          width: ${8 + Math.random() * 12}px;
+          height: ${6 + Math.random() * 10}px;
+          border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+          animation-duration: ${2 + Math.random() * 3}s;
+          animation-delay: ${Math.random() * 0.5}s;
+        `;
+        container.appendChild(c);
+        setTimeout(() => c.remove(), 4000);
+      }, i * 30);
+    }
+  }
+};
+
+// ─── Boot ────────────────────────────────────────
+game.init();
+</script>
+
+</body>
+</html>
