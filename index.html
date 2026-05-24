@@ -21,7 +21,7 @@ body {
 #app {
   width: 800px;
   max-width: 95vw;
-  height: 650px;
+  height: 680px;
   max-height: 95vh;
   background: linear-gradient(180deg, #fff9e6 0%, #ffe8f0 40%, #e8f4fd 100%);
   border-radius: 40px;
@@ -376,12 +376,12 @@ body {
   background: white;
   border: 3px solid #dfe6e9;
   border-radius: 25px;
-  padding: 8px 20px;
-  font-size: 24px;
+  padding: 6px 16px;
+  font-size: 20px;
   font-family: 'Comic Sans MS', 'Chalkboard SE', cursive, sans-serif;
   text-align: center;
   color: #5a3e85;
-  min-height: 44px;
+  min-height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -607,22 +607,22 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
+  gap: 2px;
   z-index: 5;
-  padding: 4px 0 0 0;
+  padding: 2px 0 0 0;
 }
 .keyboard-row {
   display: flex;
-  gap: 3px;
+  gap: 2px;
 }
 .key {
-  width: 32px;
-  height: 36px;
-  border-radius: 8px;
+  width: 28px;
+  height: 30px;
+  border-radius: 6px;
   background: linear-gradient(180deg, #fafafa 0%, #e8e8e8 100%);
   border: 2px solid #d0d0d0;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 12px;
   font-weight: bold;
   color: #666;
   display: flex;
@@ -672,7 +672,7 @@ body {
   .btn-start { font-size: 22px; }
   .game-header { padding: 8px 12px; }
   .header-item { font-size: 14px; }
-  .typing-display { font-size: 22px; padding: 10px 15px; }
+  .typing-display { font-size: 18px; padding: 6px 12px; }
   .level-message { font-size: 26px; }
   .victory-title { font-size: 32px; }
 }
@@ -1200,9 +1200,9 @@ const game = {
     const area = this.dom.gameArea;
     const areaW = area.clientWidth;
     const areaH = area.clientHeight;
-    const bubbleSize = Math.min(190, areaW * 0.45);
+    const bubbleSize = Math.min(150, areaW * 0.38);
     const x = Math.random() * (areaW - bubbleSize - 20) + 10;
-    const y = Math.random() * (areaH - bubbleSize - 80) + 30;
+    const y = Math.random() * (areaH - bubbleSize - 40) + 10;
 
     const bubble = document.createElement('div');
     bubble.className = 'word-bubble';
